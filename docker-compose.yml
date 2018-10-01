@@ -1,5 +1,5 @@
 models:
-  image: tp33/django
+  image: zanebilous/django
   external_links:
     - mysql:db
   volumes:
