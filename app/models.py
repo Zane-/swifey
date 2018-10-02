@@ -9,10 +9,10 @@ class User(models.Model):
     email = models.CharField(max_length=30)
     university = models.CharField(max_length=100)
 
-class Trade(models.Model):
+class Item(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField()
     num_swipes = models.IntegerField()
-    created_by = models.ForeignKey(User, null=True, on_delete=models.PROTECT)
+    created_by = models.IntegerField()
     date_created = models.DateTimeField(default=datetime.now, blank=True)
 
