@@ -16,4 +16,4 @@ class Item(models.Model):
     created_by = models.IntegerField()
     date_created = models.DateTimeField(default=datetime.now, blank=True)
     label = models.CharField(max_length=1)
-
+    for_swipes = models.BooleanField(default=True)
