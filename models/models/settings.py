@@ -25,7 +25,7 @@ SECRET_KEY = '5f!1zrn*e&oj_%z*sw36ii+3wgrp8$ko#qk8jso$cm&_8sb#h*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'exp-api']
 
 
 # Application definition
