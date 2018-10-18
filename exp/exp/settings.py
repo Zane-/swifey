@@ -25,7 +25,7 @@ SECRET_KEY = 'gi2q-%^!zx43urqa62j^a(1vxfz7cygc1r^bqwy4dt0_z&h#7#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'models-api']
 
 
 # Application definition
