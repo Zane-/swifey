@@ -16,6 +16,4 @@ class Item(models.Model):
     created_by = models.IntegerField()
     date_created = models.DateTimeField(default=datetime.now, blank=True)
     label = models.CharField(max_length=1)
-    cost = models.IntegerField()
-    rating = models.IntegerField()
 
