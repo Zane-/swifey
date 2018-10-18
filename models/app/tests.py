@@ -36,11 +36,8 @@ class ItemTestCase(TestCase):
 
     # test that seller is not client and valid user
     def test_owner(self):
-        self.assertNotEqual(Item.created_by.split(),
-                            [User.first_name, User.last_name])
-        # if separator is not a string then it failts
-        with self.assertRaises(TypeError):
-            Item.created_by.split(2)
+        self.assertNotEqual(Item.created_by,
+                            [])
 
     # tear down
     def tearDown(self):
