@@ -1,6 +1,25 @@
-{% extends 'app/index.html' %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trades</title>
+</head>
 
-<h1 class="cover-heading">Details</h1>
-{{ json }}
-
-{% endblock %}
+<body>
+    <body>
+        <table>
+            {% for trade in for_swipes %}
+                <h2>{{ trade.title }} ({{ trade.num_swipes }})</h2>
+                <p>{{ trade.description }}</p>
+                <p>posted by {{ trade.created_by.first_name }} {{ trade.created_by.last_name}} </p>
+            {% endfor %}
+        </table>
+        <table>
+                {% for trade in for_items %}
+                    <h2>{{ trade.title }} ({{ trade.num_swipes }})</h2>
+                    <p>{{ trade.description }}</p>
+                    <p>posted by {{ trade.created_by.first_name }} {{ trade.created_by.last_name}} </p>
+                {% endfor %}
+            </table>
+        </body>
+</body>
+</html>
