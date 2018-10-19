@@ -6,6 +6,7 @@ def home(request):
     return render(request, 'app/home.html', {})
 
 def details(request):
-    json = requests.get('http://exp-api:8000/api/trades/for_swipes/')
-    return HttpResponse(json)
-    return render(request, 'app/details.html', {'json': json})
+    for_swipes = requests.get('http://exp-api:8000/api/trades/for_swipes/')
+    for_items = requests.get('http://exp-api:8000/api/trades/for_items/')
+    return render(request, 'app/details.html',
+        {'for_swipes': for_swipes, 'for_items': for_items})
