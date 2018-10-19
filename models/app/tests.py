@@ -107,8 +107,7 @@ class ItemTestCase(TestCase):
             "created_by": 2,
             "num_swipes": 30,
             "label": "S",
-            "for_swipes": False
-        })
+            "for_swipes": False })
         self.assertEqual(response.status_code, 201)
 
     def testPut(self):
@@ -129,3 +128,79 @@ class ItemTestCase(TestCase):
     def testZDelete(self):
         response = client.delete('/api/v1/item/1/')
         self.assertEqual(response.status_code, 404)
+
+    def testnumSwipes(self):
+        response = client.put('/api/v1/item/1/', data={
+            "title": "Looking for futon",
+            "description": "Will trade 30 swipes for a used futon",
+            "created_by": 2,
+            "num_swipes": 40,
+            "label": "S",
+            "for_swipes": False
+        })
+        response = client.get('/api/v1/item/1/')
+        response = response.content.decode('ascii')
+        d = json.loads(response)
+        self.assertGreaterEqual(d['num_swipes'], 0)
+
+    def testTradeIn(self):
+        response = client.put('/api/v1/item/1/', data={
+            "title": "Looking for futon",
+            "description": "Will trade 30 swipes for a used futon",
+            "created_by": 2,
+            "num_swipes": 40,
+            "label": "S",
+            "for_swipes": False
+        })
+        response = client.get('/api/v1/item/1/')
+        response = response.content.decode('ascii')
+        d = json.loads(response)
+        self.assertNotEqual(d['created_by'], 1)
+
+    def testSortIncreasing(self):
+        trades = [
+            Item.objects.create(
+                title="Looking for futon",
+                description="Will trade 30 swipes for a used futon",
+                created_by=2,
+                num_swipes=30,
+                label="S",
+                for_swipes=False
+            ),
+            Item.objects.create(
+                title="Looking for futon",
+                description="Will trade 30 swipes for a used futon",
+                created_by=2,
+                label="S",
+                num_swipes=31,
+                for_swipes=False
+            ),
+            Item.objects.create(
+                title="Looking for futon",
+                description="Will trade 30 swipes for a used futon",
+                created_by=2,
+                num_swipes=32,
+                label="S",
+                for_swipes=False
+            ),
+        ]
+        first = trades[2]
+        second = trades[1]
+        third = trades[0]
+        self.assertGreater(first['num_swipes'], (second['num_swipes'], third['num_swipes']))
+
+    # def testSortDecreasing(self):
+
+    def testLabelCheck(self):
+        response = client.put('/api/v1/item/1/', data={
+            "title": "Looking for futon",
+            "description": "Will trade 30 swipes for a used futon",
+            "created_by": 2,
+            "num_swipes": 40,
+            "label": "S",
+            "for_swipes": False
+        })
+        response = client.get('/api/v1/item/1/')
+        response = response.content.decode('ascii')
+        d = json.loads(response)
+        self.assertIn(d['label'], ('S', 'M'))
