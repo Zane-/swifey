@@ -157,40 +157,6 @@ class ItemTestCase(TestCase):
         d = json.loads(response)
         self.assertNotEqual(d['created_by'], 1)
 
-    def testSortIncreasing(self):
-        trades = [
-            Item.objects.create(
-                title="Looking for futon",
-                description="Will trade 30 swipes for a used futon",
-                created_by=2,
-                num_swipes=30,
-                label="S",
-                for_swipes=False
-            ),
-            Item.objects.create(
-                title="Looking for futon",
-                description="Will trade 30 swipes for a used futon",
-                created_by=2,
-                label="S",
-                num_swipes=31,
-                for_swipes=False
-            ),
-            Item.objects.create(
-                title="Looking for futon",
-                description="Will trade 30 swipes for a used futon",
-                created_by=2,
-                num_swipes=32,
-                label="S",
-                for_swipes=False
-            ),
-        ]
-        first = trades[2]
-        second = trades[1]
-        third = trades[0]
-        self.assertGreater(first['num_swipes'], (second['num_swipes'], third['num_swipes']))
-
-    # def testSortDecreasing(self):
-
     def testLabelCheck(self):
         response = client.put('/api/v1/item/1/', data={
             "title": "Looking for futon",
