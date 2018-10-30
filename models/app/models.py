@@ -1,8 +1,39 @@
+import hmac
 import json
+import os
 
+from django.contrib.auth.hashers import make_password, check_password
 from django.core.validators import validate_email, RegexValidator
 from django.db import models
 from django.forms import ModelForm, PasswordInput
+
+
+class Authenticator(models.Model):
+    user_id = models.IntegerField()
+    authenticator = models.CharField(max_length=64, primary_key=True)
+    date_created = models.DateField(auto_now=True)
+
+    def generate_auth(self):
+        """Generates a 256 bit random authentication bitstring."""
+        auth = hmac.new(
+            key = settings.SECRET_KEY.encode('utf-8'),
+            msg=os.urandom(32),
+            digestmod = 'sha256',
+        ).hexdigest()
+        # if auth is already in the db, recurse and generate a new one
+        if self.auth_exists(auth):
+            self.generate_auth()
+        else:
+            self.authenticator = auth
+
+    def auth_exists(self, auth):
+        """
+        Checks if a generated auth token already exists in the database.
+        """
+        obj = Authenticator.objects.filter(pk=auth)
+        if obj.exists():
+            return True
+        return False
 
 class User(models.Model):
     first_name = models.CharField(max_length=30)
@@ -60,6 +91,7 @@ class User(models.Model):
     def __str__(self):
         return self.first_name + self.last_name
 
+
 class UserForm(ModelForm):
     class Meta:
         model = User
@@ -75,10 +107,11 @@ class UserForm(ModelForm):
                 'password': PasswordInput(),
         }
 
+
 class Listing(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=1000)
-    created_by = models.IntegerField()
+    used_id = models.IntegerField()
     # listing type is what is being traded
     listing_type = models.CharField(
         max_length=1,
@@ -93,18 +126,23 @@ class Listing(models.Model):
             'id': self.pk,
             'title': self.title,
             'description': self.description,
-            'created_by': self.created_by,
+            'user_id': self.user_id,
             'listing_type': self.listing_type,
             'num_swipes': self.num_swipes,
             'last_modified': self.date_created,
-            'label': self.label,
         }
 
     def __str__(self):
         return self.title
 
+
 class ListingForm(ModelForm):
     class Meta:
         model = Listing
-        fields = '__all__'
+        fields = [
+            'title',
+            'description',
+            'listing_type',
+            'num_swipes',
+        ]
 

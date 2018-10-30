@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import User, UserForm, Listing, ListingForm
+from app.models import Authenticator, User, UserForm, Listing, ListingForm
 
 @csrf_exempt
 def user_api(request, user_id=None):
@@ -66,6 +66,19 @@ def listing_api(request, listing_id=None):
     elif request.method == 'POST':
         form = ListingForm(request.POST)
         if form.is_valid():
+            # get user object from the created_by field
+            # then grab authenticator and check if it equal
+            # to the one in the database
+            auth = form.cleaned_data['auth']
+            user_id = form.cleaned_data['user_id']
+            # check that the passed in auth token exists in the
+            # database and that the user_id matches
+            authenticator = Authenticator.objects.get(pk=auth)
+            if (not authenticator.exists() or
+                not authenticator.user_id == user_id):
+                # TODO: Make this redirect to the login page
+                return HttpResponse('Invalid credentials', status=401)
+
             form.save()
             return HttpResponse(status=201)
         else:
