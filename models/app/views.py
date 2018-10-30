@@ -2,7 +2,8 @@ from django.core.exceptions import FieldError, ValidationError
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from app.models import User, UserForm, Item
+
+from app.models import User, UserForm, Listing, ListingForm
 
 @csrf_exempt
 def user_api(request, user_id=None):
@@ -51,19 +52,19 @@ def update_user(request, user_id):
         return HttpResponse(status=400)
 
 @csrf_exempt
-def item_api(request, item_id=None):
+def listing_api(request, listing_id=None):
     if request.method == 'GET':
-        if item_id is not None:
-            item = get_object_or_404(Item, pk=item_id).json()
-            return JsonResponse(item)
-        # if a item_id wasn't passed, return all items
+        if listing_id is not None:
+            listing = get_object_or_404(Listing, pk=listing_id).json()
+            return JsonResponse(listing)
+        # if a listing_id wasn't passed, return all listings
         else:
-            items = Item.objects.all()
-            data = [item.json() for item in items]
+            listings = Listing.objects.all()
+            data = [listing.json() for listing in listings]
             return JsonResponse(data, safe=False)
 
     elif request.method == 'POST':
-        form = ItemForm(request.POST)
+        form = ListingForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponse(status=201)
@@ -72,10 +73,10 @@ def item_api(request, item_id=None):
             return HttpResponse(status=422)
 
     elif request.method == 'DELETE':
-        if item_id is not None:
-                get_object_or_404(Item, pk=item_id).delete()
+        if listing_id is not None:
+                get_object_or_404(Listing, pk=listing_id).delete()
                 return HttpResponse(status=202)
-        # return 400 bad request if no item_id was supplied
+        # return 400 bad request if no listing_id was supplied
         else:
             return HttpResponse(status=400)
     else:
@@ -83,10 +84,10 @@ def item_api(request, item_id=None):
         return HttpResponse(status=400)
 
 @csrf_exempt
-def update_item(request, item_id):
+def update_listing(request, listing_id):
     if request.method == 'POST':
-        item = get_object_or_404(Item, pk=item_id)
-        form = ItemForm(request.POST or None, instance=item)
+        listing = get_object_or_404(Listing, pk=listing_id)
+        form = ListingForm(request.POST or None, instance=listing)
         if form.is_valid():
             form.save()
             return HttpResponse(status=202)
