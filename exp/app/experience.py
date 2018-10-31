@@ -31,16 +31,13 @@ def get_all(model):
     url = 'http://models-api:8000/api/v1/{}/'.format(model)
     req = requests.get(url)
     req.raise_for_status()
-    json = req.json()['objects']
-    # replace created_by id with actual user_data
-    for item in json:
-        user_id = item['created_by']
-        user_data = get('user', user_id)
-        item['created_by'] = user_data
+    json = req.json()
     return json
 
-def get_trades(*, for_swipes, sort=None):
-    trades = [d for d in get_all('item') if d['for_swipes'] == for_swipes]
+def get_listings(*, listing_type, sort=None):
+    trades = [
+         d for d in get_all('listing') if d['listing_type'] == listing_type
+    ]
 
     # sort by ascending/descending num_swipes values
     if sort == 'high':
