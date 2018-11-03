@@ -1,0 +1,14 @@
+{% extends 'app/index.html' %} {% block content %}
+
+<h1 class="cover-heading">Login</h1>
+
+<div>
+	<form action="{% url 'login' %}" method="post">
+		<div>
+			{ % csrf_token % }
+			{{ form.as_p }}
+		</div>
+		<input type="submit" value="Submit"/>
+	</form>
+</div>
+
