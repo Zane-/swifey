@@ -16,12 +16,13 @@ def details(request):
 
 def login(request):
     auth = request.COOKIES.get('auth')
+    warning = "You have entered an invalid username or password!"
     # Direct to home page if auth token is validated
     if auth:
         return HttpResponseRedirect(reverse('home'))
     # Return new login form
     if request.method == 'GET':
-        return render(request, 'app/login.html', {'form': form, 'auth': auth })
+        return render(request, 'app/login.html', {'form': form, 'auth': auth, 'err': warning })
     # :TODO POST valid request
     # :TODO handle invalid POST request
     # :TODO grab auth token once post request was made successfully
@@ -32,6 +33,7 @@ def login(request):
 
 def logout(request):
     auth = request.COOKIES.get('auth')
+    warning = "You have entered an invalid username or password!"
     if not auth:
         return HttpResponseRedirect(reverse('login'))
     # :TODO validate logout with backend
@@ -41,12 +43,13 @@ def logout(request):
 
 def sign_up(request):
     auth = request.COOKIES.get('auth')
+    warning = "Invalid! Please fill out all fields appropriately."
     # Direct to home page if auth token is validated
     if auth:
         return HttpResponseRedirect(reverse('index'))
     # Return new sign up form
     if request.method == 'GET':
-        return render(request, 'app/sign_up.html', {'form': UserForm,'auth': auth })
+        return render(request, 'app/sign_up.html', {'form': UserForm,'auth': auth, 'err': warning })
     # :TODO POST valid request
     # :TODO handle invalid POST request
     # :TODO grab auth token once post request was made successfully
@@ -55,6 +58,7 @@ def sign_up(request):
 
 def new_listing(request):
     auth = request.COOKIES.get('auth')
+    warning = "Invalid! Please fill out all fields appropriately."
     # :TODO handle new listing logic
-    return render(request, 'app/new_listing.html', {'form': , 'auth': auth })
+    return render(request, 'app/new_listing.html', {'form': , 'auth': auth, 'err': warning })
 
