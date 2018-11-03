@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 import requests
 
 # :TODO import UserForm, ListingForm from models/app/models.py
+#   or make request via experience API?
 
 def home(request):
     return render(request, 'app/home.html', {})
@@ -15,6 +16,7 @@ def details(request):
         {'for_swipes': for_swipes, 'for_items': for_items})
 
 def login(request):
+    form = UserForm()
     auth = request.COOKIES.get('auth')
     warning = "You have entered an invalid username or password!"
     # Direct to home page if auth token is validated
@@ -42,6 +44,7 @@ def logout(request):
     return next
 
 def sign_up(request):
+    form = UserForm()
     auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all fields appropriately."
     # Direct to home page if auth token is validated
@@ -57,6 +60,7 @@ def sign_up(request):
     return render(request, 'app/sign_up.html', {'form': , 'auth': auth })
 
 def new_listing(request):
+    form = ListinForm()
     auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all fields appropriately."
     # :TODO handle new listing logic

@@ -6,7 +6,8 @@
 	<form action="{% url 'login' %}" method="post">
 		<div>
 			{ % csrf_token % }
-			{{ form.as_p }}
+			<label> {{ form.email }}</label>
+			<label> {{ form.password }}</label>
 		</div>
 		<input type="submit" value="Submit"/>
 	</form>
