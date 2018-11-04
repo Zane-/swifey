@@ -101,13 +101,14 @@ def auth_api(request, auth_id=None):
 @csrf_exempt
 def login_api(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = get_object_or_404(User, email=email)
-        login = check_password(password, user.password)
-        if login:
-            return HttpResponse('SUCCESS', status=200)
-        else:
-            return HttpResponse('FAIL', status=401)
+        user = User.objects.only('password').get(email=request.POST.get('email'))
+        if user:
+            password = request.POST.get('password')
+            login = check_password(password, user.password)
+            if login:
+                return HttpResponse('SUCCESS', status=200)
+        # either bad password or user does not exist
+        return HttpResponse('FAIL', status=401)
+
     else:
         return HttpResponse('Request type must be POST', status=400)
