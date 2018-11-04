@@ -40,6 +40,13 @@ class Authenticator(models.Model):
             return True
         return False
 
+    def json(self):
+        return {
+            self.user_id,
+            self.authenticator,
+            self.date_created,
+         }
+
 class User(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
