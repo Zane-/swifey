@@ -37,7 +37,7 @@ def login(request):
     # :TODO send validated information to experience layer
     response = ''
     # Experience layer checks if invalid information was provided
-    if not response or response['ok']:
+    if not response or not response['OK']:
         # return to login page with error message
         return render(request, 'app/login.html', { 'form': form, 'err': err })
     """ If we made it here, we can log them in. """
@@ -80,7 +80,7 @@ def sign_up(request):
     # :TODO send validated information to experience layer
     response = ''
     # Experience layer checks if invalid information was provided
-    if not response or response['ok']:
+    if not response or not response['OK']:
         # return to login page with error message
         return render(request, 'app/sign_up.html', { 'form': form, 'err': err })
     next = HttpResponseRedirect(reverse('login'))
@@ -105,7 +105,7 @@ def new_listing(request):
     # :TODO send validated information to experience layer
     response = ''
     # Experience layer checks if invalid information was provided
-    if not response or response['ok']:
+    if not response or not response['OK']:
         # OPTIONAL :TODO check if experience layer reports invalid authenticator
         # use if statement then indent the rest
         # return to login page with error message
