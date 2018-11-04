@@ -101,7 +101,7 @@ def new_listing(request):
     # handle invalid POST request
     if not f.is_valid():
         # invalid form, return to listing form
-        return render(request. 'app/new_listing.html', { 'form': form, 'auth': auth, 'err': warning })
+        return render(request, 'app/new_listing.html', { 'form': form, 'auth': auth, 'err': warning })
     # :TODO send validated information to experience layer
     response = ''
     # Experience layer checks if invalid information was provided

@@ -13,6 +13,11 @@ class Authenticator(models.Model):
     authenticator = models.CharField(max_length=64, primary_key=True)
     date_created = models.DateField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        """Overrides the save method to set the auth token."""
+        self.authenticator = self.generate_auth()
+        super(Authenticator, self).save(*args, **kwargs)
+
     def generate_auth(self):
         """Generates a 256 bit random authentication bitstring."""
         auth = hmac.new(
@@ -24,7 +29,7 @@ class Authenticator(models.Model):
         if self.auth_exists(auth):
             self.generate_auth()
         else:
-            self.authenticator = auth
+            return auth
 
     def auth_exists(self, auth):
         """
