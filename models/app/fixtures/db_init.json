@@ -1,0 +1,101 @@
+[
+  {
+    "model": "app.User",
+    "pk": 1,
+	"fields": {
+	"  first_name": "Bugi",
+	"  last_name": "King",
+	"  email": "bugi@email.com",
+	"  password": "password",
+	"  university": "University of Virginia",
+	"  has_meal_plan": "False",
+	"  date_joined": "2018-10-29"
+	}
+  },
+  {
+    "model": "app.User",
+    "pk": 2,
+	"fields": {
+	"  first_name": "Zane",
+	"  last_name": "Bilous",
+	"  email": "zane@email.com",
+	"  password": "python",
+	"  university": "University of Virginia",
+	"  has_meal_plan": "True",
+	"  date_joined": "2018-10-30"
+	}
+  },
+  {
+    "model": "app.User",
+    "pk": 3,
+	"fields": {
+	"  first_name": "Sohan",
+	"  last_name": "Kabiraj",
+	"  email": "sohan@email.com",
+	"  password": "nopassword",
+	"  university": "University of Virginia",
+	"  has_meal_plan": "True",
+	"  date_joined": "2018-10-31"
+	}
+  },
+  {
+    "model": "app.Listing",
+    "pk": 1,
+	"fields": {
+	"  title": "need to survive",
+	"  description": "Looking for a new swifey",
+	"  user_id": "1",
+	"  listing_type": "I",
+	"  num_swipes": "2",
+	"  last_modified": "2018-10-30"
+	}
+  },
+  {
+    "model": "app.Listing",
+    "pk": 2,
+	"fields": {
+	"  title": "Unsung hero",
+	"  description": "Looking to trade my meal swipes for tutoring in ISA",
+	"  user_id": "2",
+	"  listing_type": "S",
+	"  num_swipes": "3",
+	"  last_modified": "2018-10-31"
+	}
+  },
+  {
+    "model": "app.Listing",
+    "pk": 3,
+	"fields": {
+	"  title": "SOS",
+	"  description": "I can't cook so I'd like someone to hook me up with swipes",
+	"  user_id": "3",
+	"  listing_type": "I",
+	"  num_swipes": "3",
+	"  last_modified": "2018-11-01"
+	}
+  },
+  {
+    "model": "app.Authenticator",
+	"fields": {
+	"  user_id": "1",
+	"  authenticator": "111",
+	"  date_created": "2018-10-29"
+	}
+  },
+  {
+    "model": "app.Authenticator",
+	"fields": {
+	"  user_id": "2",
+	"  authenticator": "111",
+	"  date_created": "2018-10-30"
+	}
+  },
+  {
+    "model": "app.Authenticator",
+	"fields": {
+	"  user_id": "3",
+	"  authenticator": "111",
+	"  date_created": "2018-10-31"
+	}
+  }
+]
