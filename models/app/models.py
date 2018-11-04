@@ -111,7 +111,7 @@ class UserForm(ModelForm):
 class Listing(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=1000)
-    used_id = models.IntegerField()
+    user_id = models.IntegerField()
     # listing type is what is being traded
     listing_type = models.CharField(
         max_length=1,
