@@ -18,8 +18,8 @@ def get_listings(request, listing_type=None, sort=None):
 def login(request):
     if request.method == 'POST':
         req = experience.login(request.POST)
-        if req == 'SUCCESS':
-            return HttpResponse('SUCCESS', status=200)
+        if req != 'FAIL':
+            return JsonResponse(req, status=200)
         else:
             return HttpResponse('FAIL', status=401)
     else:
@@ -36,7 +36,16 @@ def signup(request):
     else:
         return HttpResponse('Request type must be POST', status=400)
 
+@csrf_exempt
 def create_listing(request):
-    pass
-
+    if request.method == 'POST':
+        create = experience.create_listing(request.POST)
+        if create == 'OK':
+            return HttpResponse('OK', status=201)
+        elif create == 'AUTH ERROR':
+            return HttpResponse('AUTH ERROR', status=201)
+        else:
+            return HttpResponse('UnprocessableEntity', status=422)
+    else:
+        return HttpResponse('Request type must be POST', status=400)
 
