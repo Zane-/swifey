@@ -122,4 +122,4 @@ def new_listing(request):
         # return to login page with error message
         return render(request, 'app/login.html', { 'form': form, 'err': err })
     """ If we made it here, we have succesfully created listing. """
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('home'))
