@@ -19,7 +19,7 @@ def post(model,json):
     return 'OK'
 
 def put(model, num, json):
-    url = 'http://models-api:8000/api/v1/{}/{}/'.format(model, num)
+    url = 'http://models-api:8000/api/v1/{}/{}/update/'.format(model, num)
     req = requests.put(url, data=json)
     req.raise_for_status()
     # if no exception was raised req was ok
@@ -64,7 +64,32 @@ def signup(post_data):
 
 def login(post_data):
     req = requests.post('http://models-api:8000/api/v1/login/', data=post_data)
-    if req.status_code == 200:
-        return 'SUCCESS'
+    if req.status_code not in (400, 401):
+        # auth containing user_id and auth token
+        return req.json()
     else:
         return 'FAIL'
+
+def validate_auth(post_data):
+    if post_data is None:
+        return False
+
+    req = requests.post('http://models-api:8000/api/v1/auth/', data=post_data)
+    if req.status_code not in (400, 401):
+        return True
+    else:
+        return False
+
+def create_listing(post_data):
+    auth = post_data.pop('auth', None)
+    valid = validate_auth(auth)
+    if not valid:
+        return 'AUTH ERROR'
+
+    req = requests.post('http://models-api:8000/api/v1/listing/', data=post_data)
+    if req.status_code == 201:
+        return 'OK'
+    else:
+        return 'FAIL'
+
+
