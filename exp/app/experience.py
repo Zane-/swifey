@@ -1,6 +1,8 @@
 import os
 import requests
 
+from django.contrib.auth.hashers import make_password
+
 os.environ['NO_PROXY'] = '127.0.0.1'
 
 def get(model, num):
@@ -14,18 +16,21 @@ def post(model,json):
     req = requests.post(url, data=json)
     req.raise_for_status()
     # if no exception was raised req was ok
+    return 'OK'
 
 def put(model, num, json):
     url = 'http://models-api:8000/api/v1/{}/{}/'.format(model, num)
     req = requests.put(url, data=json)
     req.raise_for_status()
     # if no exception was raised req was ok
+    return 'OK'
 
 def delete(model, num):
     url = 'http://models-api:8000/api/v1/{}/{}/'.format(model, num)
     req = requests.delete(url)
     req.raise_for_status()
     # if no exception was raised req was ok
+    return 'OK'
 
 def get_all(model):
     url = 'http://models-api:8000/api/v1/{}/'.format(model)
@@ -47,3 +52,19 @@ def get_listings(*, listing_type, sort=None):
 
     return trades
 
+def signup(post_data):
+    post_data = post_data.copy()
+    post_data['password'] = make_password(post_data['password'])
+    req = requests.post('http://models-api:8000/api/v1/user/', data=post_data)
+    if req.status_code == 201:
+        return 'CREATED'
+    else:
+        # form did not validate
+        return 'FAIL'
+
+def login(post_data):
+    req = requests.post('http://models-api:8000/api/v1/login/', data=post_data)
+    if req.status_code == 200:
+        return 'SUCCESS'
+    else:
+        return 'FAIL'
