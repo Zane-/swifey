@@ -5,7 +5,7 @@ import os
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.validators import validate_email, RegexValidator
 from django.db import models
-from django.forms import ModelForm, PasswordInput
+from django.forms import ModelForm, PasswordInput, ValidationError
 
 
 class Authenticator(models.Model):
@@ -50,14 +50,14 @@ class User(models.Model):
             RegexValidator(
                 regex=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.edu$)',
                 message='Please use a valid .edu email'
-            )
+            ),
         ]
     )
     password = models.CharField(max_length=256)
     university = models.CharField(max_length=100)
     has_meal_plan = models.BooleanField(default=False)
     date_joined = models.DateField(auto_now_add=True)
-    listings = models.TextField()
+    listings = models.TextField(default='[]')
 
     def get_listings(self):
         """
@@ -90,7 +90,7 @@ class User(models.Model):
             'university': self.university,
             'has_meal_plan': self.has_meal_plan,
             'date_joined': self.date_joined,
-            'listings': self.get_listings(self.listings)
+            'listings': self.get_listings()
         }
 
     def __str__(self):
@@ -111,6 +111,13 @@ class UserForm(ModelForm):
         widgets = {
                 'password': PasswordInput(),
         }
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError('Email already in use')
+
+        return email
 
 
 class Listing(models.Model):

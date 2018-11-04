@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import check_password
 from django.core.exceptions import FieldError, ValidationError
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
@@ -53,19 +54,24 @@ def update_model(request, model, model_form, pk):
         return HttpResponse('Bad request type', status=400)
 
 
+@csrf_exempt
 def user_api(request, user_id=None):
     return model_api(request, User, UserForm, user_id)
 
+@csrf_exempt
 def update_user(request, user_id=None):
     return update_model(request, User, UserForm, user_id)
 
+@csrf_exempt
 def listing_api(request, listing_id=None):
     return model_api(request, Listing, ListingForm, listing_id)
 
+@csrf_exempt
 def update_listing(request, listing_id=None):
     return update_model(request, Listing, ListingForm, listing_id)
 
 
+@csrf_exempt
 def auth_api(request, auth_id=None):
     if request.method == 'GET':
         if auth_id is not None:
@@ -92,4 +98,16 @@ def auth_api(request, auth_id=None):
         # return bad request if type wasn't GET, PUT, or DELETE
         return HttpResponse('Bad request type', status=400)
 
-
+@csrf_exempt
+def login_api(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = get_object_or_404(User, email=email)
+        login = check_password(password, user.password)
+        if login:
+            return HttpResponse('SUCCESS', status=200)
+        else:
+            return HttpResponse('FAIL', status=401)
+    else:
+        return HttpResponse('Request type must be POST', status=400)
