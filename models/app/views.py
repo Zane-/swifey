@@ -6,106 +6,92 @@ from django.views.decorators.csrf import csrf_exempt
 from app.models import Authenticator, User, UserForm, Listing, ListingForm
 
 @csrf_exempt
+def model_api(request, model, model_form, pk=None):
+    if request.method == 'GET':
+        if pk is not None:
+            obj = get_object_or_404(model, pk=pk).json()
+            return JsonResponse(obj)
+        # if a pk wasn't passed, return all objects
+        else:
+            objs = model.objects.all()
+            data = [obj.json() for obj in objs]
+            if not data:
+                return HttpResponse('NONE', status=404)
+            return JsonResponse(data, safe=False)
+
+    elif request.method == 'POST':
+        form = model_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('CREATED', status=201)
+        else:
+            # if fields are not valid, return UnprocessableEntity
+            return HttpResponse('UnprocessableEntity', status=422)
+
+    elif request.method == 'DELETE':
+        if pk is not None:
+                get_object_or_404(model, pk=pk).delete()
+                return HttpResponse('OK', status=202)
+        # return 400 bad request if no pk was supplied
+        else:
+            return HttpResponse('Must supply object id', status=400)
+    else:
+        # return bad request if type wasn't GET, PUT, or DELETE
+        return HttpResponse('Bad request type', status=400)
+
+
+@csrf_exempt
+def update_model(request, model, model_form, pk):
+    if request.method == 'POST':
+        obj = get_object_or_404(model, pk=pk)
+        form = model_form(request.POST or None, instance=obj)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('OK', status=202)
+        else:
+            # UnprocessableEntity status code
+            return HttpResponse('UnprocessableEntity', status=422)
+    else:
+        return HttpResponse('Bad request type', status=400)
+
+
 def user_api(request, user_id=None):
-    if request.method == 'GET':
-        if user_id is not None:
-            user = get_object_or_404(User, pk=user_id).json()
-            return JsonResponse(user)
-        # if a user_id wasn't passed, return all users
-        else:
-            users = User.objects.all()
-            data = [user.json() for user in users]
-            return JsonResponse(data, safe=False)
+    return model_api(request, User, UserForm, user_id)
 
-    elif request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse(status=201)
-        else:
-            # if fields are not valid, return UnprocessableEntity
-            return HttpResponse(status=422)
+def update_user(request, user_id=None):
+    return update_model(request, User, UserForm, user_id)
 
-    elif request.method == 'DELETE':
-        if user_id is not None:
-                get_object_or_404(User, pk=user_id).delete()
-                return HttpResponse(status=202)
-        # return 400 bad request if no user_id was supplied
-        else:
-            return HttpResponse(status=400)
-    else:
-        # return bad request if type wasn't GET, PUT, or DELETE
-        return HttpResponse(status=400)
-
-@csrf_exempt
-def update_user(request, user_id):
-    if request.method == 'POST':
-        user = get_object_or_404(User, pk=user_id)
-        form = UserForm(request.POST or None, instance=user)
-        if form.is_valid():
-            form.save()
-            return HttpResponse(status=202)
-        else:
-            # UnprocessableEntity status code
-            return HttpResponse(status=422)
-    else:
-        return HttpResponse(status=400)
-
-@csrf_exempt
 def listing_api(request, listing_id=None):
+    return model_api(request, Listing, ListingForm, listing_id)
+
+def update_listing(request, listing_id=None):
+    return update_model(request, Listing, ListingForm, listing_id)
+
+
+def auth_api(request, auth_id=None):
     if request.method == 'GET':
-        if listing_id is not None:
-            listing = get_object_or_404(Listing, pk=listing_id).json()
-            return JsonResponse(listing)
-        # if a listing_id wasn't passed, return all listings
+        if auth_id is not None:
+            obj = get_object_or_404(Authenticator, pk=auth_id).json()
+            return JsonResponse(obj)
         else:
-            listings = Listing.objects.all()
-            data = [listing.json() for listing in listings]
-            return JsonResponse(data, safe=False)
+            return HttpResponse('Bad url for GET', status=400)
 
     elif request.method == 'POST':
-        form = ListingForm(request.POST)
-        if form.is_valid():
-            # get user object from the created_by field
-            # then grab authenticator and check if it equal
-            # to the one in the database
-            auth = form.cleaned_data['auth']
-            user_id = form.cleaned_data['user_id']
-            # check that the passed in auth token exists in the
-            # database and that the user_id matches
-            authenticator = Authenticator.objects.get(pk=auth)
-            if (not authenticator.exists() or
-                not authenticator.user_id == user_id):
-                # TODO: Make this redirect to the login page
-                return HttpResponse('Invalid credentials', status=401)
-
-            form.save()
-            return HttpResponse(status=201)
-        else:
-            # if fields are not valid, return UnprocessableEntity
-            return HttpResponse(status=422)
+        user_id = request.POST.get('user_id')
+        obj = Authenticator.objects.create(user_id=user_id)
+        obj.save()
+        return HttpResponse('OK', status=201)
 
     elif request.method == 'DELETE':
-        if listing_id is not None:
-                get_object_or_404(Listing, pk=listing_id).delete()
-                return HttpResponse(status=202)
-        # return 400 bad request if no listing_id was supplied
+        if auth_id is not None:
+                get_object_or_404(Authenticator, pk=auth_id).delete()
+                return HttpResponse('OK', status=202)
+        # return 400 bad request if no pk was supplied
         else:
-            return HttpResponse(status=400)
+            return HttpResponse('Must supply object id', status=400)
+
     else:
         # return bad request if type wasn't GET, PUT, or DELETE
-        return HttpResponse(status=400)
+        return HttpResponse('Bad request type', status=400)
 
-@csrf_exempt
-def update_listing(request, listing_id):
-    if request.method == 'POST':
-        listing = get_object_or_404(Listing, pk=listing_id)
-        form = ListingForm(request.POST or None, instance=listing)
-        if form.is_valid():
-            form.save()
-            return HttpResponse(status=202)
-        else:
-            # UnprocessableEntity status code
-            return HttpResponse(status=422)
-    else:
-        return HttpResponse(status=400)
+
