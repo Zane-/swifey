@@ -76,7 +76,13 @@ def sign_up(request):
     if not f.is_valid():
         # invalid form, return to sign_up
         return render(request, 'app/sign_up.html', { 'form': form, 'auth': auth, 'err': err })
-    # :TODO clean up fields of UserForm
+    # clean up fields of UserForm
+    first_name = f.cleaned_data['first_name']
+    last_name = f.cleaned_data['last_name']
+    email = f.cleaned_data['email']
+    password = f.cleaned_data['password']
+    university = f.cleaned_data['university']
+    has_meal_plan = f.cleaned_data['has_meal_plan']
     # :TODO send validated information to experience layer
     response = ''
     # Experience layer checks if invalid information was provided
@@ -102,6 +108,11 @@ def new_listing(request):
     if not f.is_valid():
         # invalid form, return to listing form
         return render(request, 'app/new_listing.html', { 'form': form, 'auth': auth, 'err': warning })
+    # clean up fields of ListingForm
+    title = f.cleaned_data['title']
+    description = f.cleaned_data['description']
+    listing_type = f.cleaned_data['listing_type']
+    num_swipes = f.cleaned_data['num_swipes']
     # :TODO send validated information to experience layer
     response = ''
     # Experience layer checks if invalid information was provided
