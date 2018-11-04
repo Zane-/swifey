@@ -15,8 +15,6 @@ def model_api(request, model, model_form, pk=None):
         else:
             objs = model.objects.all()
             data = [obj.json() for obj in objs]
-            if not data:
-                return HttpResponse('NONE', status=404)
             return JsonResponse(data, safe=False)
 
     elif request.method == 'POST':
