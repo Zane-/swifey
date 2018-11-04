@@ -3,26 +3,11 @@ from django.http import JsonResponse
 
 from . import experience
 
-def for_swipe_listings(request):
-    json = experience.get_listings(for_swipes=True)
-    return JsonResponse(json, safe=False)
 
-def for_swipe_listings_sorted_low(request):
-    json = experience.get_listings(for_swipes=True, sort='low')
-    return JsonResponse(json, safe=False)
+def get_listings(request, listing_type=None, sort=None):
+    if listing_type is None:
+        json = experience.get_all('listing')
+        return JsonResponse(json, safe=False)
 
-def for_swipe_listings_sorted_high(request):
-    json = experience.get_listings(for_swipes=True, sort='high')
-    return JsonResponse(json, safe=False)
-
-def for_item_listings(request):
-    json = experience.get_listings(for_swipes=False)
-    return JsonResponse(json, safe=False)
-
-def for_item_listings_sorted_low(request):
-    json = experience.get_listings(for_swipes=False, sort='low')
-    return JsonResponse(json, safe=False)
-
-def for_item_listings_sorted_high(request):
-    json = experience.get_listings(for_swipes=False, sort='high')
+    json = experience.get_listings(listing_type=listing_type, sort=sort)
     return JsonResponse(json, safe=False)
