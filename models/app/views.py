@@ -78,7 +78,7 @@ def login_api(request):
         if user:
             password = request.POST.get('password')
             login = check_password(password, user.password)
-            if login
+            if login:
                 auth = Authenticator.objects.create(user_id=user.id).json()
                 return JsonResponse(auth)
         # either bad password or user does not exist
