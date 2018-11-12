@@ -25,15 +25,6 @@ class UserCreateTest(TestCase):
     fixtures = ['db_init.json']
 
     def setUp(self):
-        # user = User.objects.create(
-        #         first_name='bugi',
-        #         last_name='king',
-        #         email='bugi@virginia.edu',
-        #         university='University of Virginia',
-        #         has_meal_plan=False,
-        #         date_joined=date.today,
-        #         listings='2 meal swipes'
-        # )
         pass
 
     def test_user_first_name(self):
@@ -87,18 +78,46 @@ class ListingViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
 class ListingCreatetTest(TestCase):
+    fixtures = ['db_init.json']
+
     def setUp(self):
-        listing = Listing.objects.create(
-                    title='2 swipes',
-                    description='swipes for hw',
-                    user_id=1,
-                    listing_type='S',
-                    num_swipes=5,
-                    last_modified=date.today,
-        )
+        pass
 
     def test_listing_title(self):
         resp = Listing.objects.get(pk=1)
         # f-strings not available in Python 3.5.4
         expected_title = ''.join(resp.title)
-        self.assertEqual(expected_title, '2 swipes')
+        self.assertEqual(expected_title, 'need to survive')
+
+    def test_listing_description(self):
+        resp = Listing.objects.get(pk=1)
+        # f-strings not available in Python 3.5.4
+        expected_description = ''.join(resp.description)
+        self.assertEqual(expected_description, 'Looking for a new swifey')
+
+
+    def test_listing_user_id(self):
+        resp = Listing.objects.get(pk=1)
+        expected_user_id = resp.user_id
+        self.assertEqual(expected_user_id, 1)
+
+
+    def test_listing_type(self):
+        resp = Listing.objects.get(pk=1)
+        # f-strings not available in Python 3.5.4
+        expected_type = ''.join(resp.listing_type)
+        self.assertEqual(expected_type, 'I')
+
+
+    def test_listing_num_swipes(self):
+        resp = Listing.objects.get(pk=1)
+        expected_num_swipes = resp.num_swipes
+        self.assertEqual(expected_num_swipes, 2 )
+
+
+    def test_listing_last_modified(self):
+        resp = Listing.objects.get(pk=1)
+        expected_date = resp.last_modified
+        self.assertEqual(expected_date, date(2018, 10, 30))
+
+
