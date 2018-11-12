@@ -9,6 +9,6 @@ urlpatterns = [
     path('listing/', views.listing_api, name='listings'),
     path('listing/<int:listing_id>/', views.listing_api, name='listing_api'),
     path('listing/<int:listing_id>/update/', views.update_listing, name='update_listing'),
-    path('auth/', views.auth_api, name='auth_api'),
-    path('auth/<int:auth_id>/', views.auth_api, name='auth_get'),
+    path('login/', views.login_api, name='login_api'),
+    path('auth/', views.validate_auth, name='validate_auth'),
 ]
