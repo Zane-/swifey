@@ -12,6 +12,8 @@ from .models import Authenticator, User, UserForm, Listing, ListingForm
 # front-end so he can make valid requests using self.client()
 
 class UserViewTest(TestCase):
+    fixtures = ['db_init.json']
+
     def setUp(self):
         pass
 
@@ -20,58 +22,63 @@ class UserViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
 class UserCreateTest(TestCase):
+    fixtures = ['db_init.json']
+
     def setUp(self):
-        user = User.objects.create(
-                first_name='bugi',
-                last_name='king',
-                email='bugi@virginia.edu',
-                university='University of Virginia',
-                has_meal_plan=False,
-                date_joined=date.today,
-                listings='2 meal swipes'
-        )
+        # user = User.objects.create(
+        #         first_name='bugi',
+        #         last_name='king',
+        #         email='bugi@virginia.edu',
+        #         university='University of Virginia',
+        #         has_meal_plan=False,
+        #         date_joined=date.today,
+        #         listings='2 meal swipes'
+        # )
+        pass
 
     def test_user_first_name(self):
         resp = User.objects.get(pk=1)
         # f-strings not available in Python 3.5.4
         expected_first_name = ''.join(resp.first_name)
-        self.assertEqual(expected_first_name, 'bugi')
+        self.assertEqual(expected_first_name, 'Bugi')
 
-    # def test_user_last_name(self):
-    #     resp = User.objects.get(pk=1)
-    #     # f-strings not available in Python 3.5.4
-    #     expected_last_name = ''.join(resp['last_name'])
-    #     self.assertEqual(expected_last_name, 'king')
-    #
-    # def test_user_email(self):
-    #     resp = User.objects.get(pk=1)
-    #     # f-strings not available in Python 3.5.4
-    #     expected_email = ''.join(resp.email)
-    #     self.assertEqual(expected_email, 'bugi@virginia.edu')
-    #
-    # def test_user_university(self):
-    #     resp = User.objects.get(pk=1)
-    #     # f-strings not available in Python 3.5.4
-    #     expected_university = ''.join(resp.university)
-    #     self.assertEqual(expected_university, 'University of Virginia')
-    #
-    # def test_user_mealplan(self):
-    #     resp = User.objects.get(pk=1)
-    #     expected_mealplan = resp.has_meal_plan
-    #     self.assertEqual(expected_mealplan, False)
-    #
-    # # def test_user_date_joined(self):
-    # #     resp = User.objects.get(pk=1)
-    # #     expected_date = resp.date_joined
-    # #     self.assertEqual(expected_date, date.today)
-    #
-    # def test_user_listing(self):
-    #     resp = User.objecs.get(pk=1)
-    #     # f-strings not available in Python 3.5.4
-    #     expected_listing = ''.join(resp.listings)
-    #     self.assertEqual(expected_listing, '2 meal swipes')
-    #
+    def test_user_last_name(self):
+        resp = User.objects.get(pk=1)
+        # f-strings not available in Python 3.5.4
+        expected_last_name = ''.join(resp.last_name)
+        self.assertEqual(expected_last_name, 'King')
+
+    def test_user_email(self):
+        resp = User.objects.get(pk=1)
+        # f-strings not available in Python 3.5.4
+        expected_email = ''.join(resp.email)
+        self.assertEqual(expected_email, 'bugi@email.com')
+
+    def test_user_university(self):
+        resp = User.objects.get(pk=1)
+        # f-strings not available in Python 3.5.4
+        expected_university = ''.join(resp.university)
+        self.assertEqual(expected_university, 'University of Virginia')
+
+    def test_user_mealplan(self):
+        resp = User.objects.get(pk=1)
+        expected_mealplan = resp.has_meal_plan
+        self.assertEqual(expected_mealplan, False)
+
+    def test_user_date_joined(self):
+        resp = User.objects.get(pk=1)
+        expected_date = resp.date_joined
+        self.assertEqual(str(expected_date), '2018-10-29')
+
+    def test_user_listing(self):
+        resp = User.objects.get(pk=1)
+        # f-strings not available in Python 3.5.4
+        expected_listing = ''.join(resp.listings)
+        self.assertEqual(expected_listing, 'rich')
+
 class ListingViewTest(TestCase):
+    fixtures = ['db_init.json']
+
     def setUp(self):
         pass
 
