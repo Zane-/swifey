@@ -1,3 +1,4 @@
+import datetime
 import hmac
 import json
 import os
@@ -39,6 +40,15 @@ class Authenticator(models.Model):
         if obj.exists():
             return True
         return False
+
+    def is_expired(self):
+        """
+        Checks if an auth token is expired (more than a week old)
+        """
+        date = datetime.date.today()
+        created = datetime.datetime.strftime(self.date_created, '%Y-%m-%d')
+        delta = date - created
+        return delta > 7
 
 class User(models.Model):
     first_name = models.CharField(max_length=30)
