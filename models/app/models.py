@@ -1,3 +1,4 @@
+import datetime
 import hmac
 import json
 import os
@@ -5,7 +6,7 @@ import os
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.validators import validate_email, RegexValidator
 from django.db import models
-from django.forms import ModelForm, PasswordInput, ValidationError
+from django.forms import ModelForm, PasswordInput
 
 
 class Authenticator(models.Model):
@@ -40,12 +41,14 @@ class Authenticator(models.Model):
             return True
         return False
 
-    def json(self):
-        return {
-            self.user_id,
-            self.authenticator,
-            self.date_created,
-         }
+    def is_expired(self):
+        """
+        Checks if an auth token is expired (more than a week old)
+        """
+        date = datetime.date.today()
+        created = datetime.datetime.strftime(self.date_created, '%Y-%m-%d')
+        delta = date - created
+        return delta > 7
 
 class User(models.Model):
     first_name = models.CharField(max_length=30)
@@ -57,14 +60,14 @@ class User(models.Model):
             RegexValidator(
                 regex=r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.edu$)',
                 message='Please use a valid .edu email'
-            ),
+            )
         ]
     )
     password = models.CharField(max_length=256)
     university = models.CharField(max_length=100)
     has_meal_plan = models.BooleanField(default=False)
     date_joined = models.DateField(auto_now_add=True)
-    listings = models.TextField(default='[]')
+    listings = models.TextField()
 
     def get_listings(self):
         """
@@ -97,7 +100,9 @@ class User(models.Model):
             'university': self.university,
             'has_meal_plan': self.has_meal_plan,
             'date_joined': self.date_joined,
-            'listings': self.get_listings()
+            # results to: takes 1 positional argument but 2 were given error
+            # 'listings': self.get_listings(self.listings)
+            'listings': self.listings
         }
 
     def __str__(self):
@@ -118,13 +123,6 @@ class UserForm(ModelForm):
         widgets = {
                 'password': PasswordInput(),
         }
-
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if User.objects.filter(email=email).exists():
-            raise ValidationError('Email already in use')
-
-        return email
 
 
 class Listing(models.Model):
@@ -148,7 +146,7 @@ class Listing(models.Model):
             'user_id': self.user_id,
             'listing_type': self.listing_type,
             'num_swipes': self.num_swipes,
-            'last_modified': self.date_created,
+            'last_modified': self.last_modified,
         }
 
     def __str__(self):

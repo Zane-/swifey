@@ -92,7 +92,9 @@ def login_api(request):
 def validate_auth(request):
     if request.method == 'POST':
         auth = Authenticator.objects.get(pk=request.POST.get('authenticator'))
-        if auth and auth.user_id == request.POST.get('user_id'):
+        # this will be passed in from the auth object stored in the user's cookie
+        user_id = request.POST.get('user_id')
+        if auth and auth.user_id == user_id and not auth.is_expired():
             return HttpResponse('OK', status=200)
         else:
             return HttpResponse('FAIL', status=401)
