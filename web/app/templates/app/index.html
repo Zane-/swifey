@@ -1,148 +1,108 @@
-<!doctype html>
-<html lang="en">
+{% extends 'app/base.html' %} {% load static %}
+{% block navbar %}
+<ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">
+            <i class="material-icons">account_circle</i> Login
+          </a>
+        </li>
+      </ul>
+{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
-
-
-    <title>Swifey</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-        crossorigin="anonymous">
-    <!-- Custom styles for this template -->
-    <style>
-        a,
-        a:focus,
-        a:hover {
-            color: #fff;
-        }
-
-
-        .btn-secondary,
-        .btn-secondary:hover,
-        .btn-secondary:focus {
-            color: #333;
-            text-shadow: none;
-            background-color: #fff;
-            border: .05rem solid #fff;
-        }
-
-        html,
-        body {
-            height: 100%;
-            background-color: #333;
-        }
-
-        body {
-            display: -ms-flexbox;
-            display: -webkit-box;
-            display: flex;
-            -ms-flex-pack: center;
-            -webkit-box-pack: center;
-            justify-content: center;
-            color: #fff;
-            text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-        }
-
-        .cover-container {
-            max-width: 42em;
-        }
-
-        .masthead {
-            margin-bottom: 2rem;
-        }
-
-        .masthead-brand {
-            margin-bottom: 0;
-        }
-
-        .nav-masthead .nav-link {
-            padding: .25rem 0;
-            font-weight: 700;
-            color: rgba(255, 255, 255, .5);
-            background-color: transparent;
-            border-bottom: .25rem solid transparent;
-        }
-
-        .nav-masthead .nav-link:hover,
-        .nav-masthead .nav-link:focus {
-            border-bottom-color: rgba(255, 255, 255, .25);
-        }
-
-        .nav-masthead .nav-link+.nav-link {
-            margin-left: 1rem;
-        }
-
-        .nav-masthead .active {
-            color: #fff;
-            border-bottom-color: #fff;
-        }
-
-        @media (min-width: 48em) {
-            .masthead-brand {
-                float: left;
-            }
-            .nav-masthead {
-                float: right;
-            }
-        }
-
-        .cover {
-            padding: 0 1.5rem;
-        }
-
-        .cover .btn-lg {
-            padding: .75rem 1.25rem;
-            font-weight: 700;
-        }
-
-        .mastfoot {
-            color: rgba(255, 255, 255, .5);
-        }
-    </style>
-</head>
-
-<body class="text-center">
-
-    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-        <header class="masthead mb-auto">
-            <div class="inner">
-                <h3 class="masthead-brand">Swifey</h3>
-                <nav class="nav nav-masthead justify-content-center">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    <a class="nav-link" href="{% url 'details' %}">Details</a>
-                </nav>
-            </div>
-        </header>
-
-        <main role="main" class="inner cover">
-                {% block content %}
-                {% endblock %}
-        </main>
-
-        <footer class="mastfoot mt-auto">
-            <div class="inner">
-                <p>Created by Zane Bilous, Sohan Kabiraj, and Bugi Abdulkarim.</p>
-            </div>
-        </footer>
+{% block header %}
+<div class="page-header header-filter" data-parallax="true" style="background-image: url({% static 'web/materialkit/assets/img/uva.jpg' %})">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1 class="title">Get the most out of your meal swipes.</h1>
+          <h4>Swifey is a website that allows students from the University of Virginia to exchange services or items for meal swipes. Students
+            can exchange their meal swipes for help on homework, rides, connections, etc.</h4>
+          <br>
+          <a href="{% url 'details' %}" class="btn btn-warning btn-raised btn-lg">
+            Visit Marketplace
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
+{% endblock %}
 
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="../../assets/js/vendor/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-</body>
-
-</html>
+{% block main %}
+<div class="container">
+        <div class="section text-center">
+          <div class="row">
+            <div class="col-md-8 ml-auto mr-auto">
+              <h2 class="title">How it works</h2>
+              <h5 class="description">Create a listing by visiting the market place, specify what you want in exchange for a certain number of meal swipes, and let others contact you regarding your listing! The possibilites are endless.</h5>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+        <div class="section text-center">
+          <h2 class="title">Here is our team</h2>
+          <div class="team">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="team-player">
+                  <div class="card card-plain">
+                    <div class="col-md-6 ml-auto mr-auto">
+                      <img src="{% static 'web/materialkit/assets/img/faces/zane.png' %}" alt="Thumbnail Image" class="img-raised rounded-circle img-fluid">
+                    </div>
+                    <h4 class="card-title">Zane Bilous
+                      <br>
+                      <small class="card-description text-muted">Developer</small>
+                    </h4>
+                    <div class="card-body">
+                      <p class="card-description">University of Virginia '19 Computer Science</p>
+                    </div>
+                    <div class="card-footer justify-content-center">
+                      <a href="https://github.com/Zane-" class="btn btn-link btn-just-icon"><i class="fa fa-github"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="team-player">
+                  <div class="card card-plain">
+                    <div class="col-md-6 ml-auto mr-auto">
+                      <img src="{% static 'web/materialkit/assets/img/faces/sohan.jpg' %}" alt="Thumbnail Image" class="img-raised rounded-circle img-fluid">
+                    </div>
+                    <h4 class="card-title">Sohan Kabiraj
+                      <br>
+                      <small class="card-description text-muted">Developer</small>
+                    </h4>
+                    <div class="card-body">
+                      <p class="card-description">University of Virginia '20 Computer Science and Economics</p>
+                    </div>
+                    <div class="card-footer justify-content-center">
+                      <a href="https://github.com/sohankabiraj" class="btn btn-link btn-just-icon"><i class="fa fa-github"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="team-player">
+                  <div class="card card-plain">
+                    <div class="col-md-6 ml-auto mr-auto">
+                      <img src="{% static 'web/materialkit/assets/img/faces/bugi.jpeg' %}" alt="Thumbnail Image" class="img-raised rounded-circle img-fluid">
+                    </div>
+                    <h4 class="card-title">Bugi Abdulkarim
+                      <br>
+                      <small class="card-description text-muted">Developer</small>
+                    </h4>
+                    <div class="card-body">
+                      <p class="card-description">University of Virginia '20 Computer Science</p>
+                    </div>
+                    <div class="card-footer justify-content-center">
+                      <a href="https://github.com/babdulkarim" class="btn btn-link btn-just-icon"><i class="fa fa-github"></i></a>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock %}

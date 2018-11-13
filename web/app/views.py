@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 import requests
 
 # :TODO import UserForm, ListingForm from models/app/models.py
 #   or make request via experience API?
 
 def home(request):
-    return render(request, 'app/home.html', {})
+    return render(request, 'app/index.html', {})
 
 def details(request):
     for_swipes = requests.get('http://exp-api:8000/api/trades/for_swipes/').json()
