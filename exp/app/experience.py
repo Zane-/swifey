@@ -80,6 +80,13 @@ def validate_auth(post_data):
     else:
         return False
 
+def validate_email(email):
+    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=post_data)
+    if req.status_code == 200:
+        return True
+    else:
+        return False
+
 def create_listing(post_data):
     auth = post_data.pop('auth', None)
     valid = validate_auth(auth)

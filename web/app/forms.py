@@ -1,5 +1,7 @@
 from django import forms
 
+import requests
+
 class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
@@ -20,6 +22,12 @@ class SignupForm(forms.Form):
         confirm_password = cleaned_data.get('confirm_password')
         if password != confirm_password:
             raise forms.ValidationError('Passwords must match.')
+
+        email = cleaned_data.get('email')
+        data = {'email': email}
+        req = requests.post('http://exp-api:8000/api/validate_email/', data=data)
+        if req.status_code != 200:
+            raise forms.ValidationError('Email already in use.')
 
 
 class ListingForm(forms.Form):

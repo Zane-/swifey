@@ -11,4 +11,5 @@ urlpatterns = [
     path('listing/<int:listing_id>/update/', views.update_listing, name='update_listing'),
     path('login/', views.login_api, name='login_api'),
     path('auth/', views.validate_auth, name='validate_auth'),
+    path('validate_email', views.validate_email, name='validate_email')
 ]

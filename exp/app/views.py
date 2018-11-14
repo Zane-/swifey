@@ -60,3 +60,15 @@ def validate_auth(request):
             return HttpResponse('FAIL', status=401)
     else:
         return HttpResponse('Request type must be POST', status=400)
+
+@csrf_exempt
+def validate_email(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        valid = experience.validate_email(email)
+        if valid:
+            return HttpResponse('OK', status=200)
+        else:
+            return HttpResponse('FAIL', status=409)
+    else:
+        return HttpResponse('Request type must be POST', status=400)
