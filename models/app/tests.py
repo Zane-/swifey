@@ -120,4 +120,21 @@ class ListingCreatetTest(TestCase):
         expected_date = resp.last_modified
         self.assertEqual(expected_date, date(2018, 10, 30))
 
+class AuthenticatorCreateTest(TestCase):
+    fixtures = ['db_init.json']
+
+    def test_auth_userid(self):
+        resp = Authenticator.objects.get(authenticator=111)
+        expected_userid = resp.user_id
+        self.assertEqual(expected_userid, 3)
+
+    def test_auth_token(self):
+        resp = Authenticator.objects.get(authenticator=111)
+        expected_token = resp.authenticator
+        self.assertEqual(expected_token, "111")
+
+    def test_auth_date(self):
+        resp = Authenticator.objects.get(authenticator=111)
+        expected_date = resp.date_created
+        self.assertEqual(expected_date, date(2018, 10, 31))
 
