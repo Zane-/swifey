@@ -132,13 +132,14 @@ def new_listing(request):
 #             data = {
 #                 'search': form.cleaned_data['search'],
 #             }
+#             url for search doesn't exist yet
 #             req = requests.post('http://exp-api:8000/new_listing/', data=data)
-#             if req.status_code == '201':
-#                 """ If we made it here, we can create new listing. """
+#             if req.status_code == '200':
+#                 """ If we made it here, we can redirect to search result page. """
 #                 response = HttpResponseRedirect(redirect('index'))
 #                 return response
 #         else:
-#             # invalid form, return to new listing
+#             # invalid form
 #             return render(request, 'app/new_listing.html', { 'form': form, 'err': warning })
 #     else:
 #         form = ListingForm()
