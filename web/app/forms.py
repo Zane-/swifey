@@ -26,7 +26,7 @@ class ListingForm(forms.Form):
     title = forms.CharField(max_length=80)
     description = forms.TextField(max_length=1000)
     listing_type = forms.CharField(
-        choices=[('S', 'Swipe'), ('M', 'Meal Exchange'), ('I', 'Item')]
-        widgets=forms.RadioSelect()
+        choices=[('S', 'Swipe'), ('M', 'Meal Exchange'), ('I', 'Item')],
+        widgets=forms.RadioSelect(),
     )
     num_swipes = forms.IntegerField(min_value=1, max_value=200)
