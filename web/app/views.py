@@ -10,10 +10,7 @@ def home(request):
     return render(request, 'app/index.html', {})
 
 def details(request):
-    for_swipes = requests.get('http://exp-api:8000/api/trades/for_swipes/').json()
-    for_items = requests.get('http://exp-api:8000/api/trades/for_items/').json()
-    return render(request, 'app/details.html',
-        {'for_swipes': for_swipes, 'for_items': for_items})
+    pass
 
 def login(request):
     form = UserForm()
@@ -96,8 +93,10 @@ def new_listing(request):
     form = ListingForm()
     auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all fields appropriately."
-    # redirect to login page
-    if not auth:
+    # redirect to login page if there is no auth cookie or it is more than a week old
+    auth_check = requests.post('http://exp-api:8000/validate_auth/', data=auth)
+    auth_valid = auth_check.status_code == 200
+    if not auth or not auth_valid:
         return HttpResponseRedirect(redirect('login') + '?next=' + reverse('new_listing'))
     # return new listing form
     if request.method == 'GET':

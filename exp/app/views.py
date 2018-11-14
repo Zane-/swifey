@@ -49,3 +49,14 @@ def create_listing(request):
     else:
         return HttpResponse('Request type must be POST', status=400)
 
+@csrf_exempt
+def validate_auth(request):
+    if reqeust.method == 'POST':
+        auth = request.POST.get('auth')
+        valid = experience.validate_auth(auth)
+        if valid:
+            return HttpResponse('OK', status=200)
+        else:
+            return HttpResponse('FAIL', status=401)
+    else:
+        return HttpResponse('Request type must be POST', status=400)

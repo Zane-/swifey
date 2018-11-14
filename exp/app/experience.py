@@ -75,7 +75,7 @@ def validate_auth(post_data):
         return False
 
     req = requests.post('http://models-api:8000/api/v1/auth/', data=post_data)
-    if req.status_code not in (400, 401):
+    if req.status_code == 200:
         return True
     else:
         return False
