@@ -11,7 +11,6 @@ def home(request):
 def details(request):
     pass
 
-
 def login(request):
     auth = request.COOKIES.get('auth')
     warning = "You have entered an invalid username or password!"
@@ -50,7 +49,7 @@ def logout(request):
     # redirect to login page
     if not auth:
         return HttpResponseRedirect(reverse('login'))
-    next = HttpResponseRedirect(reverse('index'))
+    next = HttpResponseRedirect(reverse('login'))
     next.delete_cookie('auth')
     # POST logout and validate request
     return next
@@ -105,11 +104,11 @@ def new_listing(request):
             }
             req = requests.post('http://exp-api:8000/new_listing/', data=data)
             if req.status_code == '201':
-                """ If we made it here, we can sign them up. """
+                """ If we made it here, we can create new listing. """
                 response = HttpResponseRedirect(redirect('index'))
                 return response
         else:
-            # invalid form, return to sign up
+            # invalid form, return to new listing
             return render(request, 'app/new_listing.html', { 'form': form, 'err': warning })
     else:
         form = ListingForm()
