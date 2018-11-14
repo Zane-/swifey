@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import requests
+from .forms import LoginForm, SignupForm, ListingForm
 
 # :TODO import UserForm, ListingForm from models/app/models.py
 #   or make request via experience API?
@@ -13,7 +14,7 @@ def details(request):
     pass
 
 def login(request):
-    form = UserForm()
+    form = LoginForm()
     auth = request.COOKIES.get('auth')
     warning = "You have entered an invalid username or password!"
     # Direct to home page if auth token is validated
@@ -23,7 +24,7 @@ def login(request):
     if request.method == 'GET':
         return render(request, 'app/login.html', {'form': form, 'auth': auth })
     # POST valid request
-    f = UserForm(request.POST)
+    f = LoginForm(request.POST)
     # handle invalid POST request
     if not f.is_valid():
         # invalid form, return to login
@@ -36,7 +37,7 @@ def login(request):
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
         # return to login page with error message
-        return render(request, 'app/login.html', { 'form': form, 'err': err })
+        return render(request, 'app/login.html', { 'form': form, 'err': warning })
     """ If we made it here, we can log them in. """
     # :TODO grab auth token once post request was made successfully
     # i.e. token = response['authenticator'] or whatever field
