@@ -68,3 +68,16 @@ class ListingForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.form_action = 'create_listing'
         self.helper.add_input(Submit('submit', 'Create'))
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=50, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(SearchForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'search'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'search'
+        self.helper.add_input(Submit('submit', 'Search'))
+
+
