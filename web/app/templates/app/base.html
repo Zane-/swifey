@@ -19,6 +19,19 @@
 </head>
 
 <body class="landing-page sidebar-collapse">
+
+  {# :TODO add nav bar logic for changing navbar if user is authenticated #}
+  {# you can do this by using the auth.py function auth_is_valid #}
+  {# {% if foo %} #}
+  {#   {% with cookie %} #}
+	{# 	{% include "signedin_navbar.html" %} #}
+	{# {% endwith %} #}
+  {# {% else %} #}
+	{# {% with nocookie %} #}
+	{# 	{% include "signedout_navbar.html" %} #}
+  {#   {% endwith %} #}
+  {# {% endif %} #}
+
   <nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
     <div class="container">
       <div class="navbar-translate">
@@ -37,6 +50,7 @@
       </div>
     </div>
   </nav>
+
   {% block header %}
   {% endblock %}
   <div class="main main-raised">
