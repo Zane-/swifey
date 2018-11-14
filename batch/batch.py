@@ -1,10 +1,9 @@
-from kafka import KafkaProducer
+from kafka import KafkaConsumer
 import json
 from elasticsearch import Elasticsearch
 
 consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
 es = Elasticsearch(['es'])
-
 
 while True:
     for message in consumer:
