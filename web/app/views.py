@@ -77,7 +77,7 @@ def sign_up(request):
             req = requests.post('http://exp-api:8000/signup/', data=data)
             if req.status_code == '201':
                 """ If we made it here, we can sign them up. """
-                response = HttpResponseRedirect(redirect('index'))
+                response = HttpResponseRedirect(redirect('login'))
                # set the auth cookie using the json response from POST request
                 response.set_cookie('auth', req.json())
                 return response
