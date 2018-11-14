@@ -1,6 +1,8 @@
+import time, json
 from kafka import KafkaConsumer
-import json
 from elasticsearch import Elasticsearch
+
+time.sleep(15)
 
 consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
 es = Elasticsearch(['es'])
