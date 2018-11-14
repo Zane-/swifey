@@ -4,9 +4,6 @@ from django.urls import reverse
 import requests
 from .forms import LoginForm, SignupForm, ListingForm
 
-# :TODO import UserForm, ListingForm from models/app/models.py
-#   or make request via experience API?
-
 def home(request):
     return render(request, 'app/index.html', {})
 
@@ -32,17 +29,16 @@ def login(request):
     # clean username and password fields
     email = f.cleaned_data['email']
     password = f.cleaned_data['password']
-    # :TODO send validated information to experience layer
+    # send validated information to experience layer
     response = requests.post('http://exp-api:8000/login/', data=request.post)
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
         # return to login page with error message
         return render(request, 'app/login.html', { 'form': form, 'err': warning })
     """ If we made it here, we can log them in. """
-    # :TODO grab auth token once post request was made successfully
+    # grab auth token once post request was made successfully
     # i.e. token = response['authenticator'] or whatever field
     # name is for auth token from the response
-    #token = ''
     next = HttpResponseRedirect(reverse('home'))
     next.set_cookie('auth', response.json())
     return next
@@ -55,7 +51,7 @@ def logout(request):
         return HttpResponseRedirect(reverse('login'))
     next = HttpResponseRedirect(reverse('index'))
     next.delete_cookie('auth')
-    # :TODO POST logout and validate request
+    # POST logout and validate request
     return next
 
 def sign_up(request):
@@ -81,7 +77,7 @@ def sign_up(request):
     password = f.cleaned_data['password']
     university = f.cleaned_data['university']
     has_meal_plan = f.cleaned_data['has_meal_plan']
-    # :TODO send validated information to experience layer
+    # send validated information to experience layer
     response = requests.post('http://exp-api:8000/signup/', data=request.post)
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
@@ -113,7 +109,7 @@ def new_listing(request):
     description = f.cleaned_data['description']
     listing_type = f.cleaned_data['listing_type']
     num_swipes = f.cleaned_data['num_swipes']
-    # :TODO send validated information to experience layer
+    # send validated information to experience layer
     response = requests.pos('http://exp-api:8000/create_listing/', data=request.post)
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
