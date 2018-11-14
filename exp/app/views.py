@@ -30,7 +30,7 @@ def signup(request):
     if request.method == 'POST':
         signup = experience.signup(request.POST)
         if signup == 'CREATED':
-            return HttpResponse('CREATED', status=201)
+            return JsonResponse(req, status=201)
         else:
             return HttpResponse('UnprocessableEntity', status=422)
     else:

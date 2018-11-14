@@ -57,7 +57,8 @@ def signup(post_data):
     post_data['password'] = make_password(post_data['password'])
     req = requests.post('http://models-api:8000/api/v1/user/', data=post_data)
     if req.status_code == 201:
-        return 'CREATED'
+        # return the auth token if user successfully signs up
+        return login(post_data)
     else:
         # form did not validate
         return 'FAIL'
