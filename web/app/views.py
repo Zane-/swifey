@@ -73,7 +73,7 @@ def sign_up(request):
     # handle invalid POST request
     if not f.is_valid():
         # invalid form, return to sign_up
-        return render(request, 'app/sign_up.html', { 'form': form, 'auth': auth, 'err': err })
+        return render(request, 'app/sign_up.html', { 'form': form, 'auth': auth, 'err': warning })
     # clean up fields of UserForm
     first_name = f.cleaned_data['first_name']
     last_name = f.cleaned_data['last_name']
@@ -86,7 +86,7 @@ def sign_up(request):
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
         # return to login page with error message
-        return render(request, 'app/sign_up.html', { 'form': form, 'err': err })
+        return render(request, 'app/sign_up.html', { 'form': form, 'err': warning })
     next = HttpResponseRedirect(reverse('login'))
     return next
 
@@ -120,6 +120,6 @@ def new_listing(request):
         # OPTIONAL :TODO check if experience layer reports invalid authenticator
         # use if statement then indent the rest
         # return to login page with error message
-        return render(request, 'app/login.html', { 'form': form, 'err': err })
+        return render(request, 'app/login.html', { 'form': form, 'err': warning })
     """ If we made it here, we have succesfully created listing. """
     return HttpResponseRedirect(reverse('home'))
