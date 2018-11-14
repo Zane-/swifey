@@ -92,6 +92,9 @@ def sign_up(request):
 def new_listing(request):
     auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all the fields appropriately."
+    # Direct to login page if auth token is not validated
+    if not auth:
+        return HttpResponseRedirect(redirect('login'))
     if request.method == 'POST':
         form = ListingForm(request.POST)
         # handle valid POST request
@@ -115,23 +118,29 @@ def new_listing(request):
 
     return render(request, 'app/form.html', { 'form': form })
 
-
+#
 # def search(request):
-    # if request.method == 'GET':
-        # grab text field from search form
-        # return render(request, 'app/search.html', {'form': form })
-    # f = SearchForm(request.POST)
-
-    # handle invalid POST request
-    # if not f.is_valid(():
-        # invalid form
-        # return render(request, 'app/search.html', { 'form': form, 'err': warning })
-    # clean up fields of SearchForm
-    # search = f.cleaned_data['search']
-    # send valid information to experience layer
-    # response = requests.post('htps://exp-api:8000/search/', data=request.post)
-    # Experience layer checks if invalid information was provided
-    # if not response or not response['OK']:
-    #     return render(reqest, 'app/search.html', { 'form': form, 'err': warning })
-    # """ If we made it here, we have successfully searched. """
-    # return HttpResponseRedirect(reverse('search_result'))
+#     auth = request.COOKIES.get('auth')
+#     # warning = "Invalid! Please fill out all the fields appropriately."
+#     # Direct to login page if auth token is not validated
+#     if not auth:
+#         return HttpResponseRedirect(redirect('login'))
+#     if request.method == 'POST':
+#         form = SearchForm(request.POST)
+#         # handle valid POST request
+#         if form.is_valid():
+#             data = {
+#                 'search': form.cleaned_data['search'],
+#             }
+#             req = requests.post('http://exp-api:8000/new_listing/', data=data)
+#             if req.status_code == '201':
+#                 """ If we made it here, we can create new listing. """
+#                 response = HttpResponseRedirect(redirect('index'))
+#                 return response
+#         else:
+#             # invalid form, return to new listing
+#             return render(request, 'app/new_listing.html', { 'form': form, 'err': warning })
+#     else:
+#         form = ListingForm()
+#
+#     return render(request, 'app/form.html', { 'form': form })
