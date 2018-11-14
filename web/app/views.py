@@ -42,9 +42,9 @@ def login(request):
     # :TODO grab auth token once post request was made successfully
     # i.e. token = response['authenticator'] or whatever field
     # name is for auth token from the response
-    token = ''
+    #token = ''
     next = HttpResponseRedirect(reverse('home'))
-    next.set_cookie('auth', token)
+    next.set_cookie('auth', response.json())
     return next
 
 def logout(request):
