@@ -24,7 +24,7 @@ class SignupForm(forms.Form):
 
 class ListingForm(forms.Form):
     title = forms.CharField(max_length=80)
-    description = forms.TextField(max_length=1000)
+    description = forms.CharField(max_length=1000, widget=forms.Textarea)
     listing_type = forms.CharField(
         choices=[('S', 'Swipe'), ('M', 'Meal Exchange'), ('I', 'Item')],
         widgets=forms.RadioSelect(),
