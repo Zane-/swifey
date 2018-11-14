@@ -33,7 +33,7 @@ def login(request):
     email = f.cleaned_data['email']
     password = f.cleaned_data['password']
     # :TODO send validated information to experience layer
-    response = ''
+    response = requests.post('http://exp-api:8000/login/', data=request.post)
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
         # return to login page with error message
@@ -82,7 +82,7 @@ def sign_up(request):
     university = f.cleaned_data['university']
     has_meal_plan = f.cleaned_data['has_meal_plan']
     # :TODO send validated information to experience layer
-    response = ''
+    response = requests.post('http://exp-api:8000/signup/', data=request.post)
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
         # return to login page with error message
@@ -114,7 +114,7 @@ def new_listing(request):
     listing_type = f.cleaned_data['listing_type']
     num_swipes = f.cleaned_data['num_swipes']
     # :TODO send validated information to experience layer
-    response = ''
+    response = requests.pos('http://exp-api:8000/create_listing/', data=request.post)
     # Experience layer checks if invalid information was provided
     if not response or not response['OK']:
         # OPTIONAL :TODO check if experience layer reports invalid authenticator
