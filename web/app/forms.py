@@ -1,4 +1,6 @@
 from django import forms
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 import requests
 
@@ -6,6 +8,16 @@ class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
 
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'login'
+        self.helper.form_class = 'from-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-6'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'login'
+        self.helper.add_input(Submit('submit', 'Login'))
 
 class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=30)
@@ -15,6 +27,15 @@ class SignupForm(forms.Form):
     has_meal_plan = forms.BooleanField()
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(SignupForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'signup'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'signup'
+        self.helper.add_input(Submit('submit', 'Sign up'))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -38,3 +59,12 @@ class ListingForm(forms.Form):
         widget=forms.RadioSelect(),
     )
     num_swipes = forms.IntegerField(min_value=1, max_value=200)
+
+    def __init__(self, *args, **kwargs):
+        super(ListingForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'create_listing'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'create_listing'
+        self.helper.add_input(Submit('submit', 'Create'))
