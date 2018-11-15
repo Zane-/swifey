@@ -1,12 +1,12 @@
 {% extends 'app/base.html' %} {% load static %}
 {% block navbar %}
-<ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">
-            <i class="material-icons">account_circle</i> Login
-          </a>
-        </li>
-      </ul>
+
+{% if authenticated %}
+  {% include 'app/signin_navbar.html' %}
+{% else %}
+  {% include 'app/signedout_navbar.html' %}
+{% endif %}
+
 {% endblock %}
 
 {% block header %}

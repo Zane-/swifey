@@ -3,9 +3,14 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 import requests
 from .forms import LoginForm, SignupForm, ListingForm
+from .auth import is_valid_auth
 
 def home(request):
-    return render(request, 'app/index.html', {})
+    authenticated = is_valid_auth(request.COOKIES)
+
+    return render(request, 'app/index.html', {
+        'authenticated': authenticated,
+    })
 
 
 def details(request):
