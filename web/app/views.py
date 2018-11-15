@@ -23,7 +23,7 @@ def login(request):
     if auth:
         return redirect('index')
     if request.method == 'POST':
-        form = Login(request.POST)
+        form = LoginForm(request.POST)
         # handle valid POST request
         if form.is_valid():
             data = {
@@ -41,11 +41,17 @@ def login(request):
         # handle invalid POST request
         else:
             # invalid form, return to login
-            return render(request, 'app/login.html', {'form': form, 'err': warning})
+            return render(request, 'app/form.html', {'form': form, 'err': warning})
     else:
         form = LoginForm()
 
-    return render(request, 'app/form.html', { 'form': form })
+    loginPage = True
+
+    return render(request, 'app/form.html', {
+         'form': form,
+         'loginPage': loginPage
+         
+         })
 
 
 # def logout(request):
@@ -76,7 +82,7 @@ def sign_up(request):
                 'email': form.cleaned_data['email'],
                 'password': form.cleaned_data['password'],
                 'university': form.cleaned_data['university'],
-                'has_meal_plan': form.cleaned_data['has_meal_plan'],
+                'have_a_meal_plan': form.cleaned_data['have_a_meal_plan'],
             }
             req = requests.post('http://exp-api:8000/signup/', data=data)
             if req.status_code == '201':
@@ -87,11 +93,16 @@ def sign_up(request):
                 return response
         else:
             # invalid form, return to sign up
-            return render(request, 'app/signup.html', { 'form': form, 'err': warning })
+            return render(request, 'app/form.html', { 'form': form, 'err': warning })
     else:
         form = SignupForm()
 
-    return render(request, 'app/form.html', { 'form': form })
+    loginPage = False
+
+    return render(request, 'app/form.html', {
+         'form': form, 
+         'loginPage': loginPage
+         })
 
 
 def create_listing(request):
