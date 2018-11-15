@@ -136,7 +136,7 @@ def search(request):
             req = requests.post('http://exp-api:8000/search/', data=data)
             if req.status_code == '200':
                 """ If we made it here, we can redirect to search result page. """
-                # :TODO req should return an array of the results back that can be referenced as req['results'] 
+                # :TODO req should return an array of the results back that can be referenced as req['results']
                 return render(request, 'app/search.html', 'search': search, 'results': req['results'], 'form': form, 'submit': True]
         else:
             # invalid form
