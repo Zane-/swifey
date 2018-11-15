@@ -16,7 +16,7 @@ def login(request):
     warning = "You have entered an invalid username or password!"
     # Direct to home page if auth token is validated
     if auth:
-        return HttpResponseRedirect(reverse('index'))
+        return redirect('index')
     if request.method == 'POST':
         form = Login(request.POST)
         # handle valid POST request
@@ -29,7 +29,7 @@ def login(request):
             req = requests.post('http://exp-api:8000/login/', data=data)
             if req.status_code == '200':
                 """ If we made it here, we can log them in. """
-                response = HttpResponseRedirect(reverse('index'))
+                response = redirect('index')
                # set the auth cookie using the json response from POST request
                 response.set_cookie('auth', req.json())
                 return response
@@ -48,8 +48,8 @@ def logout(request):
     warning = "You have entered an invalid username or password!"
     # redirect to login page
     if not auth:
-        return HttpResponseRedirect(reverse('login'))
-    next = HttpResponseRedirect(reverse('login'))
+        return redirect('login')
+    next = redirect('login')
     next.delete_cookie('auth')
     # POST logout and validate request
     return next
@@ -76,7 +76,7 @@ def sign_up(request):
             req = requests.post('http://exp-api:8000/signup/', data=data)
             if req.status_code == '201':
                 """ If we made it here, we can sign them up. """
-                response = HttpResponseRedirect(redirect('login'))
+                response = redirect('login')
                # set the auth cookie using the json response from POST request
                 response.set_cookie('auth', req.json())
                 return response
@@ -94,7 +94,7 @@ def create_listing(request):
     warning = "Invalid! Please fill out all the fields appropriately."
     # Direct to login page if auth token is not validated
     if not auth:
-        return HttpResponseRedirect(redirect('login'))
+        return redirect('login')
     if request.method == 'POST':
         form = ListingForm(request.POST)
         # handle valid POST request
@@ -108,7 +108,7 @@ def create_listing(request):
             req = requests.post('http://exp-api:8000/new_listing/', data=data)
             if req.status_code == '201':
                 """ If we made it here, we can create new listing. """
-                response = HttpResponseRedirect(redirect('index'))
+                response = redirect('index')
                 return response
         else:
             # invalid form, return to new listing
