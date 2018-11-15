@@ -10,5 +10,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('new_listing/', views.create_listing, name='create_listing'),
     path('validate_auth/', views.validate_auth, name='validate_auth'),
-    path('validate_email/', views.validate_email, name='validate_email')
+    path('validate_email/', views.validate_email, name='validate_email'),
+    path('search/', views.search, name='search'),
 ]
