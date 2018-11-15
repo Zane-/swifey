@@ -28,6 +28,8 @@
 		<tr>
 			<th>Title</th>
 			<th>Description</th>
+			<th>Listing Type</th>
+			<th>Number of Swipes</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -36,6 +38,8 @@
 			<!-- :TODO make sure that the results passed in includes title and description fields -->
 			<td> {{ listing.title }} <td>
 			<td> {{ listing.description }} </td>
+			<td> {{ listing.listing_type }} </td>
+			<td> {{ listing.num_swipes }} </td>
 		</tr>
 		{% endfor %}
 	</tbody>
