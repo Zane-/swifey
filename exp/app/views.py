@@ -72,3 +72,12 @@ def validate_email(request):
             return HttpResponse('FAIL', status=409)
     else:
         return HttpResponse('Request type must be POST', status=400)
+
+@csrf_exempt
+def search(request):
+    if request.method == 'POST':
+        query = request.POST.get('query')
+        listings = experience.search(query)
+        return JsonResponse(listings, safe=False)
+    else:
+        return HttpResponse('Request type must be POST', status=400)

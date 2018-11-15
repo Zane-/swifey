@@ -4,6 +4,7 @@ import requests
 
 from django.contrib.auth.hashers import make_password
 from kafka import KafkaProducer
+from elasticsearch import Elasticsearch
 
 os.environ['NO_PROXY'] = '127.0.0.1'
 
@@ -106,4 +107,30 @@ def create_listing(post_data):
     else:
         return 'FAIL'
 
-
+def search(query):
+    es = Elasticsearch(['es'])
+    results = es.search(
+        index='listing_index',
+        body={
+            'query':{
+                'query_string': {
+                    'query': query
+                },
+            },
+            'size': 10,
+        }
+    )
+    hits = results['hits']['hits']
+    listings = []
+    for hit in hits:
+        data = {
+            'score': hit['_score'],
+            'listing': hit['_source'],
+        }
+        listings.append(data)
+    # sort from high score to low score
+    listings.sort(key=lambda listing: listing['score'], reverse=True)
+    # remove scores as they are not needed by the front-end
+    # after we sort them
+    listings = [listing['listing'] for listing in listings]
+    return listings
