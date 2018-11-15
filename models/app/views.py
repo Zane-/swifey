@@ -21,8 +21,9 @@ def model_api(request, model, model_form, pk=None):
     elif request.method == 'POST':
         form = model_form(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponse('CREATED', status=201)
+            # return object id to index in ES
+            f = form.save()
+            return HttpResponse(f.pk, status=201)
         else:
             # if fields are not valid, return UnprocessableEntity
             return HttpResponse('UnprocessableEntity', status=422)
