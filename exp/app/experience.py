@@ -1,7 +1,9 @@
+import json
 import os
 import requests
 
 from django.contrib.auth.hashers import make_password
+from kafka import KafkaProducer
 
 os.environ['NO_PROXY'] = '127.0.0.1'
 
@@ -96,6 +98,10 @@ def create_listing(post_data):
 
     req = requests.post('http://models-api:8000/api/v1/listing/', data=post_data)
     if req.status_code == 201:
+        # post the relevant data into the Kafka topic
+        post_data['id'] = int(req.text)
+        kafka = KafkaProducer(bootstrap_servers='kafka:9092')
+        kafka.send('new-listings-topic', json.dumps(post_data).encode('utf-8'))
         return 'OK'
     else:
         return 'FAIL'

@@ -161,5 +161,6 @@ class ListingForm(ModelForm):
             'description',
             'listing_type',
             'num_swipes',
+            'user_id'
         ]
 
