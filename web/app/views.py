@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import requests
@@ -89,7 +89,7 @@ def sign_up(request):
     return render(request, 'app/form.html', { 'form': form })
 
 
-def new_listing(request):
+def create_listing(request):
     auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all the fields appropriately."
     # Direct to login page if auth token is not validated
