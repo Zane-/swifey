@@ -13,8 +13,27 @@ def home(request):
     })
 
 
-def details(request):
-    pass
+def details(request, id):
+    # make POST request to find details of listing id
+    req = requests.post('http://exp-api:8000/listing/' + str(id) + '/')
+    # handle valid POST request
+    if req['OK']:
+        # :TODO have to configure api to return info of the listing
+        # i.e. detail fields of the listing and id
+        details = req['info']
+        return render(request, 'details.html', { 'listing': details['info'], 'pk': details['pk']})
+    # handle invalid POST request
+    else:
+        # :TODO direct to future error.html page that is being created
+        # for now just direct to index for no errors
+        return render(request, 'index.html', { 'err': "Listing {} doesn't exist".format(id) })
+
+def marketplace(request):
+    # make POST request to find details of all listings
+    req = requests.post('http://exp-api:8000/listing/')
+    # grab fields of all listings
+    details_of_all = req['info']
+    return render(request, 'marketplace.html', { 'all_listings': details_of_all })
 
 def login(request):
     auth = request.COOKIES.get('auth')
