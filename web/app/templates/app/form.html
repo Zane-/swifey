@@ -4,6 +4,7 @@
 {% crispy form form.helper %}
 
 {% block navbar %}
+{% if loginPage %}
 <ul class="navbar-nav ml-auto">
 		<li class="nav-item">
 		  <a class="nav-link" href="{% url 'sign_up' %}">
@@ -11,6 +12,7 @@
 		  </a>
 		</li>
 	  </ul>
+{% endif %}
 {% endblock %}
 
 {% block main %}
