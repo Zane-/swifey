@@ -85,24 +85,29 @@ def validate_auth(post_data):
         return False
 
 def validate_email(email):
-    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=post_data)
+    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=email)
     if req.status_code == 200:
         return True
     else:
         return False
 
 def create_listing(post_data):
-    auth = post_data.pop('auth', None)
+    auth = post_data['auth']
     valid = validate_auth(auth)
     if not valid:
         return 'AUTH ERROR'
 
+    data = {
+        'title': post_data['title'],
+        'description': post_data['description'],
+        'num_swipes': post_data['num_swipes'],
+         'listing_type': post_data['listing_type']
+    }
     req = requests.post('http://models-api:8000/api/v1/listing/', data=post_data)
     if req.status_code == 201:
-        # post the relevant data into the Kafka topic
-        post_data['id'] = int(req.text)
+        data['id'] = int(req.text)
         kafka = KafkaProducer(bootstrap_servers='kafka:9092')
-        kafka.send('new-listings-topic', json.dumps(post_data).encode('utf-8'))
+        kafka.send('new-listings-topic', json.dumps(data).encode('utf-8'))
         return 'OK'
     else:
         return 'FAIL'
