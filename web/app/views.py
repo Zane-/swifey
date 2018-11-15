@@ -124,7 +124,7 @@ def create_listing(request):
 #     # warning = "Invalid! Please fill out all the fields appropriately."
 #     # Direct to login page if auth token is not validated
 #     if not auth:
-#         return HttpResponseRedirect(redirect('login'))
+#         return HttpResponseRedirect(reverse('login'))
 #     if request.method == 'POST':
 #         form = SearchForm(request.POST)
 #         # handle valid POST request
@@ -136,7 +136,7 @@ def create_listing(request):
 #             req = requests.post('http://exp-api:8000/new_listing/', data=data)
 #             if req.status_code == '200':
 #                 """ If we made it here, we can redirect to search result page. """
-#                 response = HttpResponseRedirect(redirect('index'))
+#                 response = HttpResponseRedirect(reverse('index'))
 #                 return response
 #         else:
 #             # invalid form
