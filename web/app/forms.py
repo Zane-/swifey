@@ -13,18 +13,27 @@ class LoginForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_id = 'login'
         self.helper.form_class = 'from-horizontal'
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-6'
+        self.helper.label_class = 'col-lg-12'
+        self.helper.field_class = 'col-lg-12'
         self.helper.form_method = 'post'
         self.helper.form_action = 'login'
         self.helper.add_input(Submit('submit', 'Login'))
+    
+    def clean(self):
+        cleaned_data = super().clean() 
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
+        data = {'email': email, 'password': password}
+        req = requests.post('http://exp-api:8000/api/login/', data=data)
+        if req.status_code != 200:
+            raise forms.ValidationError('Invalid email address/password.')
 
 class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
     email = forms.EmailField(max_length=30)
     university = forms.CharField(max_length=60)
-    has_meal_plan = forms.BooleanField()
+    have_a_meal_plan = forms.BooleanField()
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())
 

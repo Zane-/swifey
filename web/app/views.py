@@ -49,8 +49,8 @@ def login(request):
 
     return render(request, 'app/form.html', {
          'form': form,
-         'loginPage': loginPage
-         
+         'loginPage': loginPage,
+         'title': 'Login',
          })
 
 
@@ -101,7 +101,8 @@ def sign_up(request):
 
     return render(request, 'app/form.html', {
          'form': form, 
-         'loginPage': loginPage
+         'loginPage': loginPage, 
+         'title': 'Sign Up',
          })
 
 
