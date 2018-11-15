@@ -48,8 +48,8 @@ def logout(request):
     warning = "You have entered an invalid username or password!"
     # redirect to login page
     if not auth:
-        return redirect('login')
-    next = redirect('login')
+        return HttpResponseRedirect(reverse('login'))
+    next = HttpResponseRedirect(reverse(('login'))
     next.delete_cookie('auth')
     # POST logout and validate request
     return next
@@ -118,30 +118,31 @@ def create_listing(request):
 
     return render(request, 'app/form.html', { 'form': form })
 
-#
-# def search(request):
-#     auth = request.COOKIES.get('auth')
-#     # warning = "Invalid! Please fill out all the fields appropriately."
-#     # Direct to login page if auth token is not validated
-#     if not auth:
-#         return HttpResponseRedirect(reverse('login'))
-#     if request.method == 'POST':
-#         form = SearchForm(request.POST)
-#         # handle valid POST request
-#         if form.is_valid():
-#             data = {
-#                 'search': form.cleaned_data['search'],
-#             }
-#             url for search doesn't exist yet
-#             req = requests.post('http://exp-api:8000/new_listing/', data=data)
-#             if req.status_code == '200':
-#                 """ If we made it here, we can redirect to search result page. """
-#                 response = HttpResponseRedirect(reverse('index'))
-#                 return response
-#         else:
-#             # invalid form
-#             return render(request, 'app/new_listing.html', { 'form': form, 'err': warning })
-#     else:
-#         form = ListingForm()
-#
-#     return render(request, 'app/form.html', { 'form': form })
+
+def search(request):
+    auth = request.COOKIES.get('auth')
+    warning = "Invalid! Please fill out all the fields appropriately."
+    # Direct to login page if auth token is not validated
+    if not auth:
+        return HttpResponseRedirect(reverse('login'))
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        # handle valid POST request
+        if form.is_valid():
+            data = {
+                'search': form.cleaned_data['search'],
+            }
+            # :TODO create api url for search
+            req = requests.post('http://exp-api:8000/search/', data=data)
+            if req.status_code == '200':
+                """ If we made it here, we can redirect to search result page. """
+                # :TODO req should return an array of the results back that can be referenced as req['results'] 
+                return render(request, 'app/search.html', 'search': search, 'results': req['results'], 'form': form, 'submit': True]
+        else:
+            # invalid form
+            # :TODO create search.html that has a search bar
+            return render(request, 'app/search.html', { 'form': form, 'err': warning })
+    else:
+        form = ListingForm()
+
+    return render(request, 'app/form.html', { 'form': form })
