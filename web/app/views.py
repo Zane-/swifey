@@ -23,14 +23,18 @@ def details(request, id):
     else:
         # :TODO direct to future error.html page that is being created
         # for now just direct to index for no errors
-        return render(request, 'error.html', { 'err': "Listing {} doesn't exist".format(id) })
+        return render(request,
+                                'error.html',
+                                { 'err':
+                                    "Listing {} doesn't exist".format(id) })
 
 def marketplace(request):
     # make POST request to find details of all listings
     req = requests.post('http://exp-api:8000/listing/')
     # grab fields of all listings
     details_of_all = req
-    return render(request, 'marketplace.html', { 'all_listings': details_of_all })
+    return render(request, 'marketplace.html', { 'all_listings':
+                                                    details_of_all })
 
 def login(request):
     auth = request.COOKIES.get('auth')
@@ -47,7 +51,8 @@ def login(request):
                 'password': form.cleaned['password']
             }
             # POST request to experience layer with data from form
-            req = requests.post('http://exp-api:8000/login/', data=data)
+            req = requests.post('http://exp-api:8000/login/',
+                                    data=data)
             if req.status_code == '200':
                 """ If we made it here, we can log them in. """
                 response = redirect('index')
@@ -57,7 +62,8 @@ def login(request):
         # handle invalid POST request
         else:
             # invalid form, return to login
-            return render(request, 'app/form.html', {'form': form, 'err': warning})
+            return render(request, 'app/form.html', {'form': form,
+                                                        'err': warning})
     else:
         form = LoginForm()
 
@@ -109,15 +115,16 @@ def sign_up(request):
                 return response
         else:
             # invalid form, return to sign up
-            return render(request, 'app/form.html', { 'form': form, 'err': warning })
+            return render(request, 'app/form.html', { 'form': form,
+                                                        'err': warning })
     else:
         form = SignupForm()
 
     loginPage = False
 
     return render(request, 'app/form.html', {
-         'form': form, 
-         'loginPage': loginPage, 
+         'form': form,
+         'loginPage': loginPage,
          'title': 'Sign Up',
          })
 
@@ -138,14 +145,18 @@ def create_listing(request):
                 'listing_type': form.cleaned_data['listing_type'],
                 'num_swipes': form.cleaned_data['num_swipes'],
             }
-            req = requests.post('http://exp-api:8000/new_listing/', data=data)
+            req = requests.post('http://exp-api:8000/new_listing/',
+                                    data=data)
             if req.status_code == '201':
                 """ If we made it here, we can create new listing. """
                 response = redirect('index')
                 return response
         else:
             # invalid form, return to new listing
-            return render(request, 'app/new_listing.html', { 'form': form, 'err': warning })
+            return render(request,
+                            'app/new_listing.html',
+                            { 'form': form,
+                                'err': warning })
     else:
         form = ListingForm()
 
@@ -166,15 +177,23 @@ def search(request):
                 'search': form.cleaned_data['search'],
             }
             # :TODO create api url for search
-            req = requests.post('http://exp-api:8000/search/', data=data)
+            req = requests.post('http://exp-api:8000/search/',
+                                    data=request.POST.get(data))
             if req.status_code == '200':
                 """ If we made it here, we can redirect to search result page. """
                 # :TODO req should return an array of the results back that can be referenced as req['results']
-                return render(request, 'app/search.html', 'search': search, 'results': req, 'form': form, 'submit': True]
+                return render(request,
+                                'app/search.html',
+                                'search': search,
+                                'results': req.json(),
+                                'form': form,
+                                'submit': True]
         else:
             # invalid form
             # :TODO create search.html that has a search bar
-            return render(request, 'app/search.html', { 'form': form, 'err': warning })
+            return render(request,
+                            'app/search.html',
+                            { 'form': form, 'err': warning })
     else:
         form = ListingForm()
 
