@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 import requests
 from .forms import LoginForm, SignupForm, ListingForm, SearchForm
@@ -170,17 +170,13 @@ def search(request):
         # handle valid POST request
         if form.is_valid():
             search = form.cleaned_data['search']
-            # :TODO create api url for search
-            req = requests.post('http://exp-api:8000/search/',
+            req = requests.post('http://exp-api:8000/api/search/',
                                 data={'query': search})
-            if req.status_code == '200':
-                """ If we made it here, we can redirect to search result page. """
-                # :TODO req should return an array of the results back that can be referenced as req['results']
-                return render(
-                    request,
-                    'app/search.html',
-                    {'search': search, 'results': req.json(), 'form': form, 'submit': True}
-                )
+            return render(
+                request,
+                'app/search.html',
+                {'search': search, 'results': req.json(), 'submit': True}
+            )
         else:
             # invalid form
             # :TODO create search.html that has a search bar
