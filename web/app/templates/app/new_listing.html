@@ -1,0 +1,14 @@
+{% extends 'app/base.html' %} {% block content %}
+
+<h1 class="cover-heading">Create new listing</h1>
+
+<div>
+	<form action="{% url 'new_listing' %}" method="post">
+		<div>
+			{ % csrf_token % }
+			{{ form.as_p }}
+		</div>
+		<input type="submit" value="Submit"/>
+	</form>
+</div>
+

@@ -1,3 +1,4 @@
+import datetime
 import hmac
 import json
 import os
@@ -13,6 +14,11 @@ class Authenticator(models.Model):
     authenticator = models.CharField(max_length=64, primary_key=True)
     date_created = models.DateField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        """Overrides the save method to set the auth token."""
+        self.authenticator = self.generate_auth()
+        super(Authenticator, self).save(*args, **kwargs)
+
     def generate_auth(self):
         """Generates a 256 bit random authentication bitstring."""
         auth = hmac.new(
@@ -24,7 +30,7 @@ class Authenticator(models.Model):
         if self.auth_exists(auth):
             self.generate_auth()
         else:
-            self.authenticator = auth
+            return auth
 
     def auth_exists(self, auth):
         """
@@ -34,6 +40,15 @@ class Authenticator(models.Model):
         if obj.exists():
             return True
         return False
+
+    def is_expired(self):
+        """
+        Checks if an auth token is expired (more than a week old)
+        """
+        date = datetime.date.today()
+        created = datetime.datetime.strftime(self.date_created, '%Y-%m-%d')
+        delta = date - created
+        return delta > 7
 
 class User(models.Model):
     first_name = models.CharField(max_length=30)
@@ -85,7 +100,9 @@ class User(models.Model):
             'university': self.university,
             'has_meal_plan': self.has_meal_plan,
             'date_joined': self.date_joined,
-            'listings': self.get_listings(self.listings)
+            # results to: takes 1 positional argument but 2 were given error
+            # 'listings': self.get_listings(self.listings)
+            'listings': self.listings
         }
 
     def __str__(self):
@@ -111,7 +128,7 @@ class UserForm(ModelForm):
 class Listing(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=1000)
-    used_id = models.IntegerField()
+    user_id = models.IntegerField()
     # listing type is what is being traded
     listing_type = models.CharField(
         max_length=1,
@@ -129,7 +146,7 @@ class Listing(models.Model):
             'user_id': self.user_id,
             'listing_type': self.listing_type,
             'num_swipes': self.num_swipes,
-            'last_modified': self.date_created,
+            'last_modified': self.last_modified,
         }
 
     def __str__(self):
@@ -144,5 +161,6 @@ class ListingForm(ModelForm):
             'description',
             'listing_type',
             'num_swipes',
+            'user_id'
         ]
 

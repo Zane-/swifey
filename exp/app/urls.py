@@ -3,34 +3,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path(
-        'listings/for_swipes/',
-        views.for_swipe_listings,
-        name='for_swipe_listings'
-    ),
-    path(
-        'listings/for_swipes/sorted_high/',
-        views.for_swipe_listings_sorted_high,
-        name='for_swipe_listings_sorted_high'
-    ),
-    path(
-        'listings/for_swipes/sorted_low/',
-        views.for_swipe_listings_sorted_low,
-        name='for_swipe_listings_sorted_low'
-    ),
-    path(
-        'listings/for_items/',
-        views.for_item_listings,
-        name='index'
-    ),
-    path(
-        'listings/for_items/sorted_high/',
-        views.for_item_listings_sorted_high,
-        name='index'
-    ),
-    path(
-        'listings/for_items/sorted_low/',
-        views.for_item_listings_sorted_low,
-        name='index'
-    ),
+    path('listing/', views.get_listings, name='all_listings'),
+    path('listing/<slug:listing_type>/', views.get_listings, name='get_listing_type'),
+    path('listing/<slug:listing_type>/<slug:sort>/', views.get_listings, name='get_listing_type_sorted'),
+    path('login/', views.login, name='login'),
+    path('signup/', views.signup, name='signup'),
+    path('new_listing/', views.create_listing, name='create_listing'),
+    path('validate_auth/', views.validate_auth, name='validate_auth'),
+    path('validate_email/', views.validate_email, name='validate_email'),
+    path('search/', views.search, name='search'),
 ]

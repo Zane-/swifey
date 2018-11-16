@@ -108,3 +108,5 @@ db/
 
 # Mac OS
 .DS_Store
+
+.tags
