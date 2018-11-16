@@ -4,22 +4,20 @@
     <title>Trades</title>
 </head>
 
+{% if err %}
+	<!-- :TODO use bootstrap alert class or whatever you guys use -->
+	<div> {{ err }}</div>
+{% endif %}
+
 <body>
     <body>
         <table>
-            {% for trade in for_swipes %}
+            {% for trade in listings %}
                 <h2>{{ trade.title }} ({{ trade.num_swipes }})</h2>
                 <p>{{ trade.description }}</p>
                 <p>posted by {{ trade.created_by.first_name }} {{ trade.created_by.last_name}} </p>
             {% endfor %}
         </table>
-        <table>
-                {% for trade in for_items %}
-                    <h2>{{ trade.title }} ({{ trade.num_swipes }})</h2>
-                    <p>{{ trade.description }}</p>
-                    <p>posted by {{ trade.created_by.first_name }} {{ trade.created_by.last_name}} </p>
-                {% endfor %}
-            </table>
         </body>
 </body>
 </html>
