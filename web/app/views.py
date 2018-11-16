@@ -164,11 +164,7 @@ def create_listing(request):
 
 
 def search(request):
-    auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all the fields appropriately."
-    # Direct to login page if auth token is not validated
-    if not auth:
-        return HttpResponseRedirect(reverse('login'))
     if request.method == 'POST':
         form = SearchForm(request.POST)
         # handle valid POST request
