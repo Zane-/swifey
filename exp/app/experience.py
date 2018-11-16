@@ -92,10 +92,10 @@ def validate_email(email):
         return False
 
 def create_listing(post_data):
-    # auth = post_data['auth']
-    # valid = validate_auth(auth)
-    # if not valid:
-    #     return 'AUTH ERROR'
+#     auth = post_data['auth']
+#     valid = validate_auth(auth)
+#     if not valid:
+#         return 'AUTH ERROR'
 
     data = {
         'title': post_data['title'],
