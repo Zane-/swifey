@@ -93,7 +93,11 @@ def validate_email(email):
         return False
 
 def create_listing(post_data):
-    auth = post_data.get('auth')
+    auth = {
+        'user_id': post_data.get('user_id'),
+        'authenticator': post_data.get('authenticator'),
+        'date_created': post_data.get('auth_date_created')
+    }
     authenticated = validate_auth(auth)
     if not authenticated:
         return 'AUTH ERROR'

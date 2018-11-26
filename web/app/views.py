@@ -3,7 +3,7 @@ import json
 import requests
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from .forms import LoginForm, SignupForm, ListingForm, SearchForm
 from .auth import is_valid_auth
@@ -137,8 +137,10 @@ def create_listing(request):
         # handle valid POST request
         auth = ast.literal_eval(request.COOKIES.get('auth'))
         if form.is_valid():
-            data = {
+            data= {
+                'authenticator': auth['authenticator'],
                 'user_id': auth['user_id'],
+                'auth_date_created': auth['date_created'],
                 'title': form.cleaned_data['title'],
                 'description': form.cleaned_data['description'],
                 'listing_type': form.cleaned_data['listing_type'],
