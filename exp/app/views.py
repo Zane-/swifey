@@ -6,12 +6,8 @@ from . import experience
 
 
 @csrf_exempt
-def get_listings(request, listing_type=None, sort=None):
-    if listing_type is None:
-        json = experience.get_all('listing')
-        return JsonResponse(json, safe=False)
-
-    json = experience.get_listings(listing_type=listing_type, sort=sort)
+def get_all_listings(request):
+    json = experience.get_all_listings()
     return JsonResponse(json, safe=False)
 
 @csrf_exempt
@@ -28,8 +24,8 @@ def login(request):
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':
-        signup = experience.signup(request.POST)
-        if signup == 'CREATED':
+        req = experience.signup(request.POST)
+        if req == 'CREATED':
             return JsonResponse(req, status=201)
         else:
             return HttpResponse('UnprocessableEntity', status=422)
@@ -39,11 +35,11 @@ def signup(request):
 @csrf_exempt
 def create_listing(request):
     if request.method == 'POST':
-        create = experience.create_listing(request.POST)
-        if create == 'OK':
-            return HttpResponse('OK', status=201)
-        elif create == 'AUTH ERROR':
-            return HttpResponse('AUTH ERROR', status=201)
+        resp = experience.create_listing(request.POST)
+        if resp not in ('FAIL', 'AUTH ERROR'):
+            return HttpResponse(resp, status=201)
+        elif resp == 'AUTH ERROR':
+            return HttpResponse('AUTH ERROR', status=401)
         else:
             return HttpResponse('UnprocessableEntity', status=422)
     else:
@@ -51,8 +47,12 @@ def create_listing(request):
 
 @csrf_exempt
 def validate_auth(request):
-    if reqeust.method == 'POST':
-        auth = request.POST.get('auth')
+    if request.method == 'POST':
+        auth = {
+            'user_id': request.POST.get('user_id'),
+            'authenticator': request.POST.get('authenticator'),
+            'date_created': request.POST.get('date_created'),
+        }
         valid = experience.validate_auth(auth)
         if valid:
             return HttpResponse('OK', status=200)
