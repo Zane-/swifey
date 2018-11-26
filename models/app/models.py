@@ -76,14 +76,13 @@ class User(models.Model):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
-            'password': self.password,
             'university': self.university,
             'has_meal_plan': self.has_meal_plan,
             'date_joined': self.date_joined,
         }
 
     def __str__(self):
-        return self.first_name + self.last_name
+        return '{} {}'.format(self.first_name, self.last_name)
 
 
 class UserForm(ModelForm):
