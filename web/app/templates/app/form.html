@@ -3,18 +3,6 @@
 {% load crispy_forms_tags %}
 {% crispy form form.helper %}
 
-{% block navbar %}
-{% if loginPage %}
-<ul class="navbar-nav ml-auto">
-		<li class="nav-item">
-		  <a class="nav-link" href="{% url 'sign_up' %}">
-			<i class="material-icons">face</i> Sign Up
-		  </a>
-		</li>
-	  </ul>
-{% endif %}
-{% endblock %}
-
 {% block main %}
 <div class="page-header header-filter" style="background-image: url('{% static "web/materialkit/assets/img/uvalogin.jpg" %}'); background-size: cover; background-position: top center;">
     <div class="container">
@@ -27,11 +15,6 @@
               <div class="card-body">
 					{% crispy form %}
 			  </div>
-			  {% if loginPage %}
-			  <div class="footer text-center">
-					<a href="{% url 'sign_up' %}" class="btn btn-primary btn-link btn-wd btn-lg">Sign Up</a>
-			</div>
-			{% endif %}
             </form>
         </div>
       </div>

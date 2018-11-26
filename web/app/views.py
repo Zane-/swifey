@@ -1,40 +1,34 @@
+import ast
+import json
+import requests
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-import requests
 from .forms import LoginForm, SignupForm, ListingForm, SearchForm
 from .auth import is_valid_auth
 
-def home(request):
-    authenticated = is_valid_auth(request.COOKIES)
-
-    return render(request, 'app/index.html', {
-        'authenticated': authenticated,
-    })
-
-
-def details(request, id):
-    # make POST request to find details of listing id
-    req = requests.post('http://exp-api:8000/listing/' + str(id) + '/')
-    # handle valid POST request
-    if req['OK']:
-        return render(request, 'details.html', { 'listing': req })
-    # handle invalid POST request
-    else:
-        # :TODO direct to future error.html page that is being created
-        # for now just direct to index for no errors
-        return render(request,
-                                'error.html',
-                                { 'err':
-                                    "Listing {} doesn't exist".format(id) })
+def index(request):
+    auth = request.COOKIES.get('auth')
+    # takes the string representing the dict and converts it to a dict
+    auth = ast.literal_eval(auth)
+    authenticated = is_valid_auth(auth)
+    return render(
+        request,
+        'app/index.html',
+        {'login': authenticated}
+    )
 
 def marketplace(request):
     # make POST request to find details of all listings
-    req = requests.post('http://exp-api:8000/listing/')
+    req = requests.post('http://exp-api:8000/api/listing/')
     # grab fields of all listings
-    details_of_all = req
-    return render(request, 'marketplace.html', { 'all_listings':
-                                                    details_of_all })
+    listings = req.json()
+    return render(
+        request,
+        'marketplace.html',
+        {'listings': listings}
+    )
 
 def login(request):
     auth = request.COOKIES.get('auth')
@@ -48,44 +42,38 @@ def login(request):
         if form.is_valid():
             data = {
                 'email': form.cleaned_data['email'],
-                'password': form.cleaned['password']
+                'password': form.cleaned_data['password']
             }
             # POST request to experience layer with data from form
-            req = requests.post('http://exp-api:8000/login/',
-                                    data=data)
-            if req.status_code == '200':
-                """ If we made it here, we can log them in. """
-                response = redirect('index')
-               # set the auth cookie using the json response from POST request
-                response.set_cookie('auth', req.json())
-                return response
+            req = requests.post('http://exp-api:8000/api/login/', data=data)
+            if req.status_code == 200:
+                resp = redirect('index')
+                # set the auth cookie using the json response from POST request
+                resp.set_cookie('auth', req.json())
+                return resp
         # handle invalid POST request
         else:
             # invalid form, return to login
-            return render(request, 'app/form.html', {'form': form,
-                                                        'err': warning})
+            return render(
+                request,
+                'app/form.html',
+                {'form': form, 'err': warning}
+            )
     else:
         form = LoginForm()
 
     loginPage = True
-
     return render(request, 'app/form.html', {
          'form': form,
-         'loginPage': loginPage,
          'title': 'Login',
-         })
+    })
 
 
-# def logout(request):
-#     auth = request.COOKIES.get('auth')
-#     warning = "You have entered an invalid username or password!"
-#     # redirect to login page
-#     if not auth:
-#         return HttpResponseRedirect(reverse('login'))
-#     next = HttpResponseRedirect(reverse(('login'))
-#     next.delete_cookie('auth')
-#     # POST logout and validate request
-#     return next
+def logout(request):
+    auth = request.COOKIES.get('auth')
+    resp = redirect('login')
+    resp.delete_cookie('auth')
+    return resp
 
 
 def sign_up(request):
@@ -104,29 +92,28 @@ def sign_up(request):
                 'email': form.cleaned_data['email'],
                 'password': form.cleaned_data['password'],
                 'university': form.cleaned_data['university'],
-                'have_a_meal_plan': form.cleaned_data['have_a_meal_plan'],
+                'has_meal_plan': form.cleaned_data['have_a_meal_plan'],
             }
-            req = requests.post('http://exp-api:8000/signup/', data=data)
+            req = requests.post('http://exp-api:8000/api/signup/', data=data)
             if req.status_code == '201':
-                """ If we made it here, we can sign them up. """
-                response = redirect('login')
+                response = redirect('/')
+                response.set_cookie('auth', req.json(), max_age=604800)
                # set the auth cookie using the json response from POST request
-                response.set_cookie('auth', req.json())
                 return response
         else:
             # invalid form, return to sign up
-            return render(request, 'app/form.html', { 'form': form,
-                                                        'err': warning })
+            return render(
+                request,
+                'app/form.html',
+                {'form': form, 'err': warning}
+            )
     else:
         form = SignupForm()
 
-    loginPage = False
-
     return render(request, 'app/form.html', {
          'form': form,
-         'loginPage': loginPage,
          'title': 'Sign Up',
-         })
+    })
 
 
 def create_listing(request):
@@ -145,7 +132,7 @@ def create_listing(request):
                 'listing_type': form.cleaned_data['listing_type'],
                 'num_swipes': form.cleaned_data['num_swipes'],
             }
-            req = requests.post('http://exp-api:8000/new_listing/',
+            req = requests.post('http://exp-api:8000/api/new_listing/',
                                     data=data)
             if req.status_code == '201':
                 """ If we made it here, we can create new listing. """
@@ -160,7 +147,18 @@ def create_listing(request):
     else:
         form = ListingForm()
 
-    return render(request, 'app/form.html', { 'form': form })
+    return render(request, 'app/form.html', {'form': form})
+
+
+def profile(request):
+    auth = requests.COOKIES.get('auth')
+    auth = ast.literal_eval(auth)
+    authenticated = is_valid_auth(auth)
+    if not authenticated:
+        return redirect('login')
+    user_id = auth['user_id']
+    # populate template based on info obtained from user_id passed in
+    return render(request, 'app/profile.html', {'user_id': user_id})
 
 
 def search(request):

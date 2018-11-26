@@ -18,15 +18,7 @@ class LoginForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.form_action = 'login'
         self.helper.add_input(Submit('submit', 'Login'))
-    
-    def clean(self):
-        cleaned_data = super().clean() 
-        email = cleaned_data.get('email')
-        password = cleaned_data.get('password')
-        data = {'email': email, 'password': password}
-        req = requests.post('http://exp-api:8000/api/login/', data=data)
-        if req.status_code != 200:
-            raise forms.ValidationError('Invalid email address/password.')
+
 
 class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=30)
