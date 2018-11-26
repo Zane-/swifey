@@ -80,8 +80,9 @@ def login_api(request):
             password = request.POST.get('password')
             login = check_password(password, user.password)
             if login:
-                auth = Authenticator.objects.create(user_id=user.id).json()
-                return JsonResponse(auth)
+                auth = Authenticator.objects.create(user_id=user.id)
+                auth.save()
+                return JsonResponse(auth.json())
         # either bad password or user does not exist
         return HttpResponse('FAIL', status=401)
 
@@ -95,9 +96,11 @@ def validate_auth(request):
         auth = Authenticator.objects.get(pk=request.POST.get('authenticator'))
         # this will be passed in from the auth object stored in the user's cookie
         user_id = request.POST.get('user_id')
-        if auth and auth.user_id == user_id and not auth.is_expired():
+        if auth and int(auth.user_id) == int(user_id) and not auth.is_expired():
             return HttpResponse('OK', status=200)
         else:
+            if auth.is_expired():
+                auth.delete()
             return HttpResponse('FAIL', status=401)
 
     else:

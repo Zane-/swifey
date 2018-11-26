@@ -56,8 +56,6 @@ def get_listings(*, listing_type, sort=None):
     return trades
 
 def signup(post_data):
-    post_data = post_data.copy()
-    post_data['password'] = make_password(post_data['password'])
     req = requests.post('http://models-api:8000/api/v1/user/', data=post_data)
     if req.status_code == 201:
         # return the auth token if user successfully signs up
@@ -92,10 +90,10 @@ def validate_email(email):
         return False
 
 def create_listing(post_data):
-    # auth = post_data['auth']
-    # valid = validate_auth(auth)
-    # if not valid:
-    #     return 'AUTH ERROR'
+    auth = post_data['auth']
+    valid = validate_auth(auth)
+    if not valid:
+        return 'AUTH ERROR'
 
     data = {
         'title': post_data['title'],
@@ -139,3 +137,4 @@ def search(query):
     # after we sort them
     listings = [listing['listing'] for listing in listings]
     return listings
+
