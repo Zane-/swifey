@@ -34,7 +34,13 @@
       </div>
       <div class="collapse navbar-collapse">
 		<ul class="navbar-nav ml-auto">
-			{% if login %}
+			{% if authenticated %}
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'create_listing' %}">
+			    <i class="material-icons">face</i>
+				New listing
+			  </a>
+			</li>
 			<li class="nav-item">
 			  <a class="nav-link" href="{% url 'marketplace' %}">
 			    <i class="material-icons">face</i>

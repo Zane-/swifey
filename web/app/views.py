@@ -9,33 +9,38 @@ from .forms import LoginForm, SignupForm, ListingForm, SearchForm
 from .auth import is_valid_auth
 
 def index(request):
-    auth = request.COOKIES.get('auth')
-    # takes the string representing the dict and converts it to a dict
-    auth = ast.literal_eval(auth)
-    authenticated = is_valid_auth(auth)
+    authenticated = is_valid_auth(request.COOKIES)
     return render(
         request,
         'app/index.html',
-        {'login': authenticated}
+        {'authenticated': authenticated}
     )
 
 def marketplace(request):
-    # make POST request to find details of all listings
-    req = requests.post('http://exp-api:8000/api/listing/')
+    # :TODO
+    # - Add a filter button that passes a post variable
+    # to the template to determine what to show
+    # - Add a search bar, this should just get results
+    # and render them to the marketplace template
+
+    req = requests.get('http://exp-api:8000/api/listing/')
+    authenticated = is_valid_auth(request.COOKIES)
     # grab fields of all listings
     listings = req.json()
     return render(
         request,
-        'marketplace.html',
-        {'listings': listings}
+        'app/marketplace.html',
+        {'listings': listings, 'authenticated': authenticated}
     )
 
 def login(request):
-    auth = request.COOKIES.get('auth')
     warning = "You have entered an invalid username or password!"
+
+    authenticated = is_valid_auth(request.COOKIES)
     # Direct to home page if auth token is validated
-    if auth:
+    if authenticated:
         return redirect('index')
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         # handle valid POST request
@@ -62,11 +67,11 @@ def login(request):
     else:
         form = LoginForm()
 
-    loginPage = True
-    return render(request, 'app/form.html', {
-         'form': form,
-         'title': 'Login',
-    })
+    return render(
+        request,
+        'app/form.html',
+        {'form': form, 'title': 'Login',}
+    )
 
 
 def logout(request):
@@ -77,11 +82,13 @@ def logout(request):
 
 
 def sign_up(request):
-    auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all the fields appropriately."
+
     # Direct to home page if auth token is validated
-    if auth:
-        return HttpResponseRedirect(reverse('index'))
+    authenticated = is_valid_auth(request.COOKIES)
+    if authenticated:
+        return redirect('index')
+
     if request.method == 'POST':
         form = SignupForm(request.POST)
         # handle valid POST request
@@ -95,8 +102,8 @@ def sign_up(request):
                 'has_meal_plan': form.cleaned_data['have_a_meal_plan'],
             }
             req = requests.post('http://exp-api:8000/api/signup/', data=data)
-            if req.status_code == '201':
-                response = redirect('/')
+            if req.status_code == 201:
+                response = redirect('index')
                 response.set_cookie('auth', req.json(), max_age=604800)
                # set the auth cookie using the json response from POST request
                 return response
@@ -110,55 +117,77 @@ def sign_up(request):
     else:
         form = SignupForm()
 
-    return render(request, 'app/form.html', {
-         'form': form,
-         'title': 'Sign Up',
-    })
+    return render(
+        request,
+        'app/form.html',
+        {'form': form,'title': 'Sign Up',}
+    )
 
 
 def create_listing(request):
-    auth = request.COOKIES.get('auth')
     warning = "Invalid! Please fill out all the fields appropriately."
+
+    authenticated = is_valid_auth(request.COOKIES)
     # Direct to login page if auth token is not validated
-    if not auth:
+    if not authenticated:
         return redirect('login')
+
     if request.method == 'POST':
         form = ListingForm(request.POST)
         # handle valid POST request
+        auth = ast.literal_eval(request.COOKIES.get('auth'))
         if form.is_valid():
             data = {
+                'user_id': auth['user_id'],
                 'title': form.cleaned_data['title'],
                 'description': form.cleaned_data['description'],
                 'listing_type': form.cleaned_data['listing_type'],
                 'num_swipes': form.cleaned_data['num_swipes'],
             }
-            req = requests.post('http://exp-api:8000/api/new_listing/',
-                                    data=data)
-            if req.status_code == '201':
-                """ If we made it here, we can create new listing. """
-                response = redirect('index')
+
+            req = requests.post('http://exp-api:8000/api/create_listing/', data=data)
+            if req.status_code == 201:
+                # the id of the listing is returned from the post request
+                response = redirect('/listing/{}/'.format(req.text))
                 return response
         else:
             # invalid form, return to new listing
-            return render(request,
-                            'app/new_listing.html',
-                            { 'form': form,
-                                'err': warning })
+            return render(
+                request,
+                'app/form.html',
+                {'form': form,'err': warning}
+            )
     else:
         form = ListingForm()
 
-    return render(request, 'app/form.html', {'form': form})
+    return render(
+        request,
+        'app/form.html',
+        {'form': form, 'authenticated': authenticated}
+    )
 
+
+def listing(request, listing_id):
+    authenticated = is_valid_auth(request.COOKIES)
+
+    return render(
+        request,
+        'app/listing.html',
+        {'listing_id': listing_id, 'authenticated': authenticated}
+    )
 
 def profile(request):
-    auth = requests.COOKIES.get('auth')
-    auth = ast.literal_eval(auth)
-    authenticated = is_valid_auth(auth)
+    authenticated = is_valid_auth(request.COOKIES)
     if not authenticated:
         return redirect('login')
-    user_id = auth['user_id']
-    # populate template based on info obtained from user_id passed in
-    return render(request, 'app/profile.html', {'user_id': user_id})
+
+    # extract user_id from cookie to render info
+    user_id = ast.literal_eval(request.COOKIES.get('auth'))['user_id']
+    return render(
+        request,
+        'app/profile.html',
+        {'user_id': user_id, 'authenticated': authenticated}
+    )
 
 
 def search(request):
@@ -167,9 +196,8 @@ def search(request):
         form = SearchForm(request.POST)
         # handle valid POST request
         if form.is_valid():
-            search = form.cleaned_data['search']
-            req = requests.post('http://exp-api:8000/api/search/',
-                                data={'query': search})
+            data = {'query': form.cleaned_data['search']}
+            req = requests.post('http://exp-api:8000/api/search/', data=data)
             return render(
                 request,
                 'app/search.html',
