@@ -57,3 +57,10 @@ batch:
     # <run a python script that pulls messages from Kafka and indexs that in ES>
    command: "python batch.py"
 
+haproxy:
+    build: ./load_balancer
+    container_name: haproxy
+    links:
+      - web:web
+    ports:
+      - "8005:8000"
