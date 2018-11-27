@@ -12,7 +12,6 @@
 		</tr>
 	</thead>
 	<tbody>
-	{% for field in listing_id %}
 	<tr>
 		<th scope="row">{{ listing_id.listing_type }}</th>
 		<td>{{ listing_id.auth_date_created }}</td>
@@ -20,7 +19,6 @@
 		<td>{{ listing_id.description }}</td>
 		<td>{{ listing_id.num_swipes }}</td>
 	</tr>
-	{% endfor %}
 	</tbody>
 </table>
 
