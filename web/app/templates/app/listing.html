@@ -1,2 +1,27 @@
 {% extends 'app/base.html' %}
 {% load static %}
+
+{% block main %}
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">Date created</th>
+			<th scope="col">Title</th>
+			<th scope="col">Description</th>
+			<th scope="col">Number of swipes</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for field in listing_id %}
+	<tr>
+		<th scope="row">{{ listing_id.listing_type }}</th>
+		<td>{{ listing_id.auth_date_created }}</td>
+		<td>{{ listing_id.title }}</td>
+		<td>{{ listing_id.description }}</td>
+		<td>{{ listing_id.num_swipes }}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}
