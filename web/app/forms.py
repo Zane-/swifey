@@ -18,6 +18,16 @@ class LoginForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.form_action = 'login'
         self.helper.add_input(Submit('submit', 'Login'))
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        data = {
+                'email': cleaned_data['email'],
+                'password': cleaned_data['password']
+            }        
+        req = requests.post('http://exp-api:8000/api/login/', data=data)
+        if req.status_code in (400, 401):
+            raise forms.ValidationError("Username or password don't match.")
 
 
 class SignupForm(forms.Form):
