@@ -85,8 +85,8 @@ def validate_auth(post_data):
     else:
         return False
 
-def validate_email(email):
-    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=email)
+def validate_email(post_data):
+    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=post_data)
     if req.status_code == 200:
         return True
     else:

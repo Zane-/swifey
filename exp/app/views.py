@@ -64,8 +64,7 @@ def validate_auth(request):
 @csrf_exempt
 def validate_email(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        valid = experience.validate_email(email)
+        valid = experience.validate_email(request.POST)
         if valid:
             return HttpResponse('OK', status=200)
         else:

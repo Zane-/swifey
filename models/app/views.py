@@ -1,5 +1,5 @@
 from django.contrib.auth.hashers import check_password
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import FieldError, ValidationError, ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -110,8 +110,10 @@ def validate_auth(request):
 @csrf_exempt
 def validate_email(request):
     if request.method == 'POST':
-        user = User.objects.filter(email=request.POST.get('email'))
-        if not user:
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
             return HttpResponse('OK', status=200)
         else:
             return HttpResponse('FAIL', status=409)
