@@ -25,7 +25,7 @@ def login(request):
 def signup(request):
     if request.method == 'POST':
         req = experience.signup(request.POST)
-        if req == 'CREATED':
+        if req != 'FAIL' :
             return JsonResponse(req, status=201)
         else:
             return HttpResponse('UnprocessableEntity', status=422)
