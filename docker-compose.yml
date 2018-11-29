@@ -30,7 +30,7 @@ web:
     - "8000:8000"
   volumes:
     - ./web:/app
-  command: "mod_wsgi-express start-server --reload-on-changes web/wsgi.py"
+  command: "mod_wsgi-express start-server --reload-on-changes --log-to-terminal web/wsgi.py"
 
 web2:
   image: zanebilous/django
@@ -41,7 +41,7 @@ web2:
     - "8003:8000"
   volumes:
     - ./web:/app
-  command: "mod_wsgi-express start-server --reload-on-changes web/wsgi.py"
+  command: "mod_wsgi-express start-server --reload-on-changes --log-to-terminal web/wsgi.py"
 
 kafka:
    image: spotify/kafka
