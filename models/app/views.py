@@ -75,7 +75,11 @@ def update_listing(request, listing_id=None):
 @csrf_exempt
 def login_api(request):
     if request.method == 'POST':
-        user = User.objects.get(email=request.POST.get('email'))
+        try:
+            user = User.objects.get(email=request.POST.get('email'))
+        except ObjectDoesNotExist:
+            return HttpResponse('FAIL', status=401)
+
         if user:
             password = request.POST.get('password')
             login = check_password(password, user.password)
@@ -93,10 +97,13 @@ def login_api(request):
 @csrf_exempt
 def validate_auth(request):
     if request.method == 'POST':
-        auth = Authenticator.objects.get(pk=request.POST.get('authenticator'))
+        try:
+            auth = Authenticator.objects.get(pk=request.POST.get('authenticator'))
+        except ObjectDoesNotExist:
+            return HttpResponse('FAIL', status=404)
         # this will be passed in from the auth object stored in the user's cookie
         user_id = request.POST.get('user_id')
-        if auth and int(auth.user_id) == int(user_id) and not auth.is_expired():
+        if int(auth.user_id) == int(user_id) and not auth.is_expired():
             return HttpResponse('OK', status=200)
         else:
             if auth.is_expired():
