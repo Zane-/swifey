@@ -5,7 +5,8 @@
 <table class="table">
 	<thead>
 		<tr>
-			<th scope="col">Date created</th>
+			<th scope="col">Type</th>
+			<th scope="col">Last Modified</th>
 			<th scope="col">Title</th>
 			<th scope="col">Description</th>
 			<th scope="col">Number of swipes</th>
@@ -13,11 +14,11 @@
 	</thead>
 	<tbody>
 	<tr>
-		<th scope="row">{{ listing_id.listing_type }}</th>
-		<td>{{ listing_id.auth_date_created }}</td>
-		<td>{{ listing_id.title }}</td>
-		<td>{{ listing_id.description }}</td>
-		<td>{{ listing_id.num_swipes }}</td>
+		<th scope="row">{{ listing.listing_type }}</th>
+		<td>{{ listing.last_modified }}</td>
+		<td>{{ listing.title }}</td>
+		<td>{{ listing.description }}</td>
+		<td>{{ listing.num_swipes }}</td>
 	</tr>
 	</tbody>
 </table>

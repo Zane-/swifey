@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from requests.exceptions import HTTPError
 
 from . import experience
 
@@ -31,6 +32,17 @@ def signup(request):
             return HttpResponse('UnprocessableEntity', status=422)
     else:
         return HttpResponse('Request type must be POST', status=400)
+
+@csrf_exempt
+def get_listing(request, listing_id):
+    if request.method == 'GET':
+        try:
+            json = experience.get('listing', listing_id)
+        except HTTPError:
+            return HttpResponse('Listing does not exist', status=404)
+        return JsonResponse(json, status=200)
+    else:
+        return HttpResponse('Request type must be GET', status=400)
 
 @csrf_exempt
 def create_listing(request):

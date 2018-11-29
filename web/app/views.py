@@ -172,10 +172,16 @@ def create_listing(request):
 def listing(request, listing_id):
     authenticated = is_valid_auth(request.COOKIES)
 
+    req = requests.get('http://exp-api:8000/api/listing/{}/'.format(listing_id))
+    if req.status_code == 404:
+        return HttpResponse(status=404)
+
+    listing = req.json()
+
     return render(
         request,
         'app/listing.html',
-        {'listing_id': listing_id, 'authenticated': authenticated}
+        {'listing': listing, 'authenticated': authenticated}
     )
 
 def profile(request):
