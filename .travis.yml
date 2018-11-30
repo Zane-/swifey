@@ -2,18 +2,16 @@ language: python
 services: docker
 branches:
     only:
-    - feature-travis
+    - dev
 
 before_install:
 - docker pull zanebilous/django
 - docker pull mysql:5.7.23
 - mkdir db
 - docker run --name mysql -d -e MYSQL_ROOT_PASSWORD='$3cureUS' -v db:/var/lib/mysql mysql:5.7.23
-- sleep 5
 - docker start mysql
-- sleep 10
+- sleep 5
 - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.23 mysql -uroot -p'$3cureUS' -h db -e "create user 'www'@'%' identified by '\$3cureUS'; create database cs4501 character set utf8; grant all on cs4501.* to 'www'@'%'; grant all on test_cs4501.* to 'www'@'%';"
-- sleep 2
 
 script:
 - docker run -it --name swifey -p 8000:8000 --link mysql:db -v ${TRAVIS_BUILD_DIR}/models/:/app zanebilous/django python manage.py test
