@@ -16,4 +16,4 @@ before_install:
 - sleep 2
 
 script:
-- docker run -it --name swifey -p 8000:8000 --link mysql:db -v models/:/app zanebilous/django python manage.py test
+- docker run -it --name swifey -p 8000:8000 --link mysql:db -v ~/models/:/app zanebilous/django python manage.py test
