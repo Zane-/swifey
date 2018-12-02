@@ -10,6 +10,15 @@ class SeleniumTests(unittest.TestCase):
             desired_capabilities=DesiredCapabilities.CHROME
         )
 
+    def tets_home(self):
+        pass
+
+    def test_login_button(self):
+        pass
+
+    def test_register_button(self):
+        pass
+
     def tearDown(self):
         self.driver.close()
 if __name__ == "__main__":
