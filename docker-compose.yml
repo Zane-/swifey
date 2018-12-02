@@ -76,3 +76,23 @@ haproxy:
       - web2:web2
     ports:
       - "8004:8000"
+
+selenium-chrome:
+  image: selenium/standalone-chrome
+  container_name: selenium-chrome
+  links:
+    - web:web
+    - web2:web2
+  ports:
+    - "4444:8000"
+
+selenium-test:
+  image: tp33/django
+  container_name: selenium-test
+  links:
+    - selenium-chrome:selenium-chrome
+    - web:web
+    - web2:web2
+  volumes:
+    - ./selenium:/app
+  command: bash -c "pip install selenium==2.48 && python selenium_test.py"
