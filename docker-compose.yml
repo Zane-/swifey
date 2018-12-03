@@ -68,14 +68,14 @@ batch:
     # <run a python script that pulls messages from Kafka and indexs that in ES>
    command: "python batch.py"
 
-haproxy:
-    build: ./load_balancer
-    container_name: haproxy
-    links:
-      - web:web
-      - web2:web2
-    ports:
-      -"8004:8000"
+#haproxy:
+#    build: ./load_balancer
+#    container_name: haproxy
+#    links:
+#      - web:web
+#      - web2:web2
+#    ports:
+#      -"8004:8000"
 
 selenium-chrome:
     image: selenium/standalone-chrome
@@ -93,5 +93,5 @@ selenium-test:
       - web:web
     volumes:
       - ./app/selenium:/app
-    command: bash -c "pip install selenium && python selenium_tests.py"
+    command: bash -c "pip install selenium && python selenium-tests.py"
 
