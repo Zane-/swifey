@@ -23,25 +23,23 @@ exp:
 
 web:
   image: zanebilous/django
-  container_name: web
+  container_name: web-server
   links:
     - exp:exp-api
-  ports:
-    - "8000:8000"
+
   volumes:
     - ./web:/app
-  command: "mod_wsgi-express start-server --reload-on-changes --log-to-terminal web/wsgi.py"
+  command: "mod_wsgi-express start-server --reload-on-changes ./web/wsgi.py --log-to-terminal"
 
 web2:
   image: zanebilous/django
-  container_name: web2
+  container_name: web-server2
   links:
     - exp:exp-api
-  ports:
-    - "8003:8000"
+
   volumes:
     - ./web:/app
-  command: "mod_wsgi-express start-server --reload-on-changes --log-to-terminal web/wsgi.py"
+  command: "mod_wsgi-express start-server --reload-on-changes ./web/wsgi.py --log-to-terminal"
 
 kafka:
    image: spotify/kafka
@@ -69,20 +67,23 @@ batch:
    command: "python batch.py"
 
 haproxy:
-    build: ./load_balancer
+    # build: ./load_balancer
+    image: haproxy:1.8
     container_name: haproxy
     links:
-      - web:web
-      - web2:web2
+      - web:web-api
+      - web2:web2-api
     ports:
-      - "8004:8000"
+      - "8000:8000"
+    volumes:
+      - ./load_balancer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
 
 selenium-chrome:
   shm_size: 1G
   image: selenium/standalone-chrome
   container_name: selenium-chrome
-  links: 
-    - web:web 
+  links:
+    - web:web
   ports:
     - "4444:4444"
 
