@@ -13,26 +13,28 @@ class SeleniumTests(unittest.TestCase):
             desired_capabilities=DesiredCapabilities.CHROME
         )
 
-    # def test_search_in_python_org(self):
-    #     driver = self.driver
-    #     driver.get("http://www.python.org")
-    #     self.assertIn("Python", driver.title)
-    #     print(driver.title)
-        # elem = driver.find_element_by_name("q")
-        # elem.send_keys("pycon")
-        # elem.send_keys(Keys.RETURN)
-        # assert "No results found." not in driver.page_source
+    def test_search_in_python_org(self):
+        driver = self.driver
+        driver.get("http://www.python.org")
+        self.assertIn("Python", driver.title)
+        elem = driver.find_element_by_name("q")
+        elem.send_keys("pycon")
+        elem.send_keys(Keys.RETURN)
+        assert "No results found." not in driver.page_source
+
+    def test_title(self):
+        driver = self.driver
+        driver.get("http://web:8000/")
+        title = str(driver.title)
+        self.assertEqual('Swifey', title)
 
     def test_login_button(self):
-        try:
-            driver = self.driver
-            print("About to get driver")
-            driver.get("http://web:8000/")
-            print("Title of Website: ", driver.title)
-        except Exception as e:
-            print(e)
-        # title = str(driver.title)
-        # self.assertEqual('Swifey', title)
+        driver = self.driver
+        driver.get("http://web:8000/")
+        driver.find_element_by_link_text('Log in').click()
+        heading = driver.find_element_by_tag_name('h3')
+        print(str(heading))
+        self.assertEqual('Log in', heading.text)
     
     def tearDown(self):
         self.driver.close()

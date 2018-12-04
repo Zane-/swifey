@@ -70,7 +70,7 @@ def login(request):
     return render(
         request,
         'app/form.html',
-        {'form': form, 'title': 'Login',}
+        {'form': form, 'title': 'Log in',}
     )
 
 
