@@ -78,20 +78,23 @@ batch:
 #      -"8004:8000"
 
 selenium-chrome:
-    image: selenium/standalone-chrome
-    container_name: selenium-chrome
-    links:
-      - web:web
-    ports:
-      - "4444:4444"
+  shm_size: 1G
+  image: selenium/standalone-chrome
+  container_name: selenium-chrome
+  links:
+    - web:web
+  ports:
+    - "4444:4444"
 
 selenium-test:
-    image: zanebilous/django
-    container_name: selenium-test
-    links:
-      - selenium-chrome:selenium-chrome
-      - web:web
-    volumes:
-      - ./app/selenium:/app
-    command: bash -c "pip install selenium && python selenium-tests.py"
+  shm_size: 1G
+  image: zanebilous/django
+  container_name: selenium-test
+  links:
+    - selenium-chrome:selenium-chrome
+    - web:web
+  volumes:
+    - ./selenium:/app
+  command: bash -c "pip install selenium==3.14.0 && sleep 7 && python selenium-tests.py"
+
 

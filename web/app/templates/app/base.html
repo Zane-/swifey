@@ -54,20 +54,20 @@
 			  </a>
 			</li>
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'logout' %}">
+			  <a class="nav-link" href="{% url 'logout' %}" name="logout">
 			    <i class="material-icons">face</i>
 				Log out
 			  </a>
 			</li>
 			{% else %}
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'login' %}">
+			  <a class="nav-link" href="{% url 'login' %}" name="login">
 			    <i class="material-icons">face</i>
 				Log in
 			  </a>
 			</li>
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'signup' %}">
+			  <a class="nav-link" href="{% url 'signup' %}" name="signup">
 			    <i class="material-icons">face</i>
 				Sign up
 			  </a>
