@@ -44,9 +44,7 @@ class SeleniumTests(unittest.TestCase):
         driver = self.driver
         driver.get("http://web:8000/")
         driver.find_element_by_name("signup").click()
-        #heading = driver.find_element_by_tag_name('h3') 
-        #print('This is the sign up: ', heading.text)
-        first_name = driver.find_element_by_name("first_name")
+        first_name = driver.find_element_by_id("id_first_name")
         first_name.send_keys(firstName)
         last_name = driver.find_element_by_id("id_last_name")
         last_name.send_keys(lastName)
@@ -59,13 +57,23 @@ class SeleniumTests(unittest.TestCase):
         confirm_password = driver.find_element_by_id("id_confirm_password")
         confirm_password.send_keys(password)
         driver.find_element_by_id("submit-id-submit").click()
-        self.assertTrue("You have successfully signed up." in driver.page_source)
+        assert "Did not successfully sign up" not in driver.page_source
 
-    ''' def test_login(self):
+    def test_login(self):
         driver = self.driver
         driver.get("http://web:8000/")
         driver.find_element_by_name("login").click()
-        driver.find_element_by_name("email").send_keys("") '''
+        driver.find_element_by_name("email").send_keys("test@gmail.com")
+        driver.find_element_by_name("password").send_keys("password")
+        driver.find_element_by_name("submit").click() 
+        assert "Did not successfully login" not in driver.page_source
+        self.assertEqual("You have successfully logged in.", driver.page_source)
+
+    def test_logout(self):
+        driver = self.driver
+        driver.get("http://web:8000/")
+        driver.find_element_by_name("logout").click()
+        assert "Did not successfully logout" not in driver.page_source
     
     def tearDown(self):
         self.driver.close()
