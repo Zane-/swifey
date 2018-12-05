@@ -1,5 +1,5 @@
 from django.contrib.auth.hashers import check_password
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import FieldError, ValidationError, ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -75,13 +75,18 @@ def update_listing(request, listing_id=None):
 @csrf_exempt
 def login_api(request):
     if request.method == 'POST':
-        user = User.objects.get(email=request.POST.get('email'))
+        try:
+            user = User.objects.get(email=request.POST.get('email'))
+        except ObjectDoesNotExist:
+            return HttpResponse('FAIL', status=401)
+
         if user:
             password = request.POST.get('password')
             login = check_password(password, user.password)
             if login:
-                auth = Authenticator.objects.create(user_id=user.id).json()
-                return JsonResponse(auth)
+                auth = Authenticator.objects.create(user_id=user.id)
+                auth.save()
+                return JsonResponse(auth.json())
         # either bad password or user does not exist
         return HttpResponse('FAIL', status=401)
 
@@ -92,12 +97,17 @@ def login_api(request):
 @csrf_exempt
 def validate_auth(request):
     if request.method == 'POST':
-        auth = Authenticator.objects.get(pk=request.POST.get('authenticator'))
+        try:
+            auth = Authenticator.objects.get(pk=request.POST.get('authenticator'))
+        except ObjectDoesNotExist:
+            return HttpResponse('FAIL', status=404)
         # this will be passed in from the auth object stored in the user's cookie
         user_id = request.POST.get('user_id')
-        if auth and auth.user_id == user_id and not auth.is_expired():
+        if int(auth.user_id) == int(user_id) and not auth.is_expired():
             return HttpResponse('OK', status=200)
         else:
+            if auth.is_expired():
+                auth.delete()
             return HttpResponse('FAIL', status=401)
 
     else:
@@ -107,8 +117,10 @@ def validate_auth(request):
 @csrf_exempt
 def validate_email(request):
     if request.method == 'POST':
-        user = User.objects.filter(email=request.POST.get('email'))
-        if not user:
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
             return HttpResponse('OK', status=200)
         else:
             return HttpResponse('FAIL', status=409)

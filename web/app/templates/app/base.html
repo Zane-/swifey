@@ -20,24 +20,10 @@
 
 <body class="landing-page sidebar-collapse">
 
-  {# :TODO add nav bar logic for changing navbar if user is authenticated #}
-  {# you can do this by using the auth.py function auth_is_valid #}
-  {# {% if foo %} #}
-  {#   {% with cookie %} #}
-	{# 	{% include "signedin_navbar.html" %} #}
-	{# {% endwith %} #}
-  {# {% else %} #}
-	{# {% with nocookie %} #}
-	{# 	{% include "signedout_navbar.html" %} #}
-  {#   {% endwith %} #}
-  {# {% endif %} #}
-
-  {# use navbar below for how to create html files above #}
-
   <nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
     <div class="container">
       <div class="navbar-translate">
-        <a class="navbar-brand" href="{% url 'home' %}">
+        <a class="navbar-brand" href="{% url 'index' %}" name="index">
           Swifey </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="sr-only">Toggle navigation</span>
@@ -47,8 +33,47 @@
         </button>
       </div>
       <div class="collapse navbar-collapse">
-        {% block navbar %}
-        {% endblock %}
+		<ul class="navbar-nav ml-auto">
+			{% if authenticated %}
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'create_listing' %}" name="create">
+			    <i class="material-icons">face</i>
+				New listing
+			  </a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'marketplace' %}">
+			    <i class="material-icons">face</i>
+				Marketplace
+			  </a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'profile' %}" name="profile">
+			    <i class="material-icons">face</i>
+				Profile
+			  </a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'logout' %}" name="logout">
+			    <i class="material-icons">face</i>
+				Log out
+			  </a>
+			</li>
+			{% else %}
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'login' %}" name="login">
+			    <i class="material-icons">face</i>
+				Log in
+			  </a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'signup' %}" name="signup">
+			    <i class="material-icons">face</i>
+				Sign up
+			  </a>
+			</li>
+			{% endif %}
+		</ul>
       </div>
     </div>
   </nav>

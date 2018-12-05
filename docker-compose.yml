@@ -23,14 +23,23 @@ exp:
 
 web:
   image: zanebilous/django
-  container_name: web
+  container_name: web-server
   links:
     - exp:exp-api
-  ports:
-    - "8000:8000"
+
   volumes:
     - ./web:/app
-  command: "mod_wsgi-express start-server --reload-on-changes web/wsgi.py"
+  command: "mod_wsgi-express start-server --reload-on-changes ./web/wsgi.py --log-to-terminal"
+
+web2:
+  image: zanebilous/django
+  container_name: web-server2
+  links:
+    - exp:exp-api
+
+  volumes:
+    - ./web:/app
+  command: "mod_wsgi-express start-server --reload-on-changes ./web/wsgi.py --log-to-terminal"
 
 kafka:
    image: spotify/kafka
@@ -56,4 +65,36 @@ batch:
       - ./batch:/app
     # <run a python script that pulls messages from Kafka and indexs that in ES>
    command: "python batch.py"
+
+haproxy:
+    # build: ./load_balancer
+    image: haproxy:1.8
+    container_name: haproxy
+    links:
+      - web:web-api
+      - web2:web2-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./load_balancer/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+
+selenium-chrome:
+  shm_size: 1G
+  image: selenium/standalone-chrome
+  container_name: selenium-chrome
+  links:
+    - web:web
+  ports:
+    - "4444:4444"
+
+selenium-test:
+  shm_size: 1G
+  image: zanebilous/django
+  container_name: selenium-test
+  links:
+    - selenium-chrome:selenium-chrome
+    - web:web
+  volumes:
+    - ./selenium:/app
+  command: bash -c "pip install selenium==3.14.0 && sleep 7 && python selenium_test.py"
 

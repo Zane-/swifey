@@ -42,22 +42,23 @@ def get_all(model):
     json = req.json()
     return json
 
+def get_all_listings():
+    return get_all('listing')
+
 def get_listings(*, listing_type, sort=None):
-    trades = [
+    listings = [
          d for d in get_all('listing') if d['listing_type'] == listing_type
     ]
 
     # sort by ascending/descending num_swipes values
     if sort == 'high':
-        trades.sort(key=lambda d: d['num_swipes'], reverse=True)
+        listings.sort(key=lambda d: d['num_swipes'], reverse=True)
     elif sort == 'low':
-        trades.sort(key=lambda d: d['num_swipes'])
+        listings.sort(key=lambda d: d['num_swipes'])
 
-    return trades
+    return listings
 
 def signup(post_data):
-    post_data = post_data.copy()
-    post_data['password'] = make_password(post_data['password'])
     req = requests.post('http://models-api:8000/api/v1/user/', data=post_data)
     if req.status_code == 201:
         # return the auth token if user successfully signs up
@@ -84,31 +85,37 @@ def validate_auth(post_data):
     else:
         return False
 
-def validate_email(email):
-    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=email)
+def validate_email(post_data):
+    req = requests.post('http://models-api:8000/api/v1/validate_email/', data=post_data)
     if req.status_code == 200:
         return True
     else:
         return False
 
 def create_listing(post_data):
-    # auth = post_data['auth']
-    # valid = validate_auth(auth)
-    # if not valid:
-    #     return 'AUTH ERROR'
+    auth = {
+        'user_id': post_data.get('user_id'),
+        'authenticator': post_data.get('authenticator'),
+        'date_created': post_data.get('auth_date_created')
+    }
+    authenticated = validate_auth(auth)
+    if not authenticated:
+        return 'AUTH ERROR'
 
     data = {
-        'title': post_data['title'],
-        'description': post_data['description'],
-        'num_swipes': post_data['num_swipes'],
-         'listing_type': post_data['listing_type']
+        'user_id': post_data.get('user_id'),
+        'title': post_data.get('title'),
+        'description': post_data.get('description'),
+        'num_swipes': post_data.get('num_swipes'),
+        'listing_type': post_data.get('listing_type')
     }
-    req = requests.post('http://models-api:8000/api/v1/listing/', data=post_data)
+    req = requests.post('http://models-api:8000/api/v1/listing/', data=data)
+
     if req.status_code == 201:
         data['id'] = int(req.text)
         kafka = KafkaProducer(bootstrap_servers='kafka:9092')
         kafka.send('new-listings-topic', json.dumps(data).encode('utf-8'))
-        return 'OK'
+        return int(req.text)
     else:
         return 'FAIL'
 
@@ -139,3 +146,4 @@ def search(query):
     # after we sort them
     listings = [listing['listing'] for listing in listings]
     return listings
+
