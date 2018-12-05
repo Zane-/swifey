@@ -97,3 +97,4 @@ selenium-test:
   volumes:
     - ./selenium:/app
   command: bash -c "pip install selenium==3.14.0 && sleep 7 && python selenium_test.py"
+

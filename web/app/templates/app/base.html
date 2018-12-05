@@ -23,7 +23,7 @@
   <nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
     <div class="container">
       <div class="navbar-translate">
-        <a class="navbar-brand" href="{% url 'index' %}">
+        <a class="navbar-brand" href="{% url 'index' %}" name="index">
           Swifey </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="sr-only">Toggle navigation</span>
@@ -36,7 +36,7 @@
 		<ul class="navbar-nav ml-auto">
 			{% if authenticated %}
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'create_listing' %}">
+			  <a class="nav-link" href="{% url 'create_listing' %}" name="create">
 			    <i class="material-icons">face</i>
 				New listing
 			  </a>
@@ -48,26 +48,26 @@
 			  </a>
 			</li>
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'profile' %}">
+			  <a class="nav-link" href="{% url 'profile' %}" name="profile">
 			    <i class="material-icons">face</i>
 				Profile
 			  </a>
 			</li>
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'logout' %}">
+			  <a class="nav-link" href="{% url 'logout' %}" name="logout">
 			    <i class="material-icons">face</i>
 				Log out
 			  </a>
 			</li>
 			{% else %}
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'login' %}">
+			  <a class="nav-link" href="{% url 'login' %}" name="login">
 			    <i class="material-icons">face</i>
 				Log in
 			  </a>
 			</li>
 			<li class="nav-item">
-			  <a class="nav-link" href="{% url 'signup' %}">
+			  <a class="nav-link" href="{% url 'signup' %}" name="signup">
 			    <i class="material-icons">face</i>
 				Sign up
 			  </a>
