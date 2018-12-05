@@ -2,6 +2,7 @@ language: python
 services: docker
 branches:
     only:
+    - master
     - dev
 
 before_install:
