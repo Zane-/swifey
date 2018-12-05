@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'gi2q-%^!zx43urqa62j^a(1vxfz7cygc1r^bqwy4dt0_z&h#7#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'models-api']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
