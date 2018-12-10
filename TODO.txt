@@ -1,43 +1,4 @@
-Sohan:
-- Write views for Signup, Login, and CreateListing
-- These views should simply check for the type of request
-and render the form template with the form variable passed in.
-Example:
-def sign_up(request):
-	if request.method == 'POST':
-		form = SignupForm(request.POST)
-		if form.is_valid():
-			data = {
-				'first_name': form.cleaned_data['first_name'],
-				'last_name': form.cleaned_data['last_name'],
-				'email': form.cleaned_data['email'],
-				'password': form.cleaned_data['password'],
-				'university': form.cleaned_data['university'],
-				'has_meal_plan': form.cleaned_data['has_meal_plan']
-			}
-		req = requests.post('http://exp-api:8000/signup/', data=data)
-		if req.status_code == 201:
-			response = HttpResponseRedirect(reverse('index'))
-			# set the auth cookie returned from signing up using the json response
-			response.set_cookie("auth", req.json())
-			return response
-	else:
-		form = SignupForm()
-
-	return render(request, 'app/form.html', {'form': form})
-
-- The appearance of the form is modified in forms.py, look up django crispy forms documentation
-for more info
-- Write logic for changing the navbar is the user is authenticated
-- You can do this by using the auth.py function auth_is_valid, which takes a parameter of requests.COOKIES
-- You can then pass the return value into a template and add some if / else logic to render the correct navbar
-- Not sure if inherited templates will take variables passed in, so you may need to look that up
-
-Bugi:
-- Create fixtures for the database
-- Start with a clean database so we don't have any invalid data
-- Then just use the Sign up form and create new accounts, then create new listings from those accounts and make
-sure everything is getting updated in the database correctly
-- Use this command from the models project directory to dump the db:
-python manage.py dumpdata --exclude auth.permission --exclude contenttypes > db.json
-- Help Sohan with the above if you can
+- Signup doesnt redirect to home page 
+- Make marketplace page look nice 
+- Make search page look nice 
+- Figure out what happens after creating a listing 
