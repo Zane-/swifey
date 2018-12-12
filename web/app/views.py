@@ -171,6 +171,15 @@ def create_listing(request):
 
 def listing(request, listing_id):
     authenticated = is_valid_auth(request.COOKIES)
+    user_id = request.COOKIES.get('auth')['user_id']
+    # post user_id and listing_id to experience to push to kafka
+    rec_push = requests.post('http://exp-api:8000/api/recommendations/', data={'user_id': user_id, 'listing_id': listing_id})
+
+    rec_pull = requests.get('http://exp-api:8000/api/recommendations/{}'.format(listing_id))
+    if rec_pull.status_code == 200:
+        recs = rec_pull.json()
+    else:
+        recs = []
 
     req = requests.get('http://exp-api:8000/api/listing/{}/'.format(listing_id))
     if req.status_code == 404:
@@ -181,7 +190,7 @@ def listing(request, listing_id):
     return render(
         request,
         'app/listing.html',
-        {'listing': listing, 'authenticated': authenticated}
+        {'listing': listing, 'authenticated': authenticated, 'recommendations': recs}
     )
 
 def profile(request):
