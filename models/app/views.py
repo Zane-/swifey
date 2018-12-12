@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Authenticator, User, UserForm, Listing, ListingForm
+from app.models import Authenticator, User, UserForm, Listing, ListingForm, Recommendation
 
 @csrf_exempt
 def model_api(request, model, model_form, pk=None):
@@ -126,4 +126,63 @@ def validate_email(request):
             return HttpResponse('FAIL', status=409)
     else:
         return HttpResponse('Request type must be POST', status=400)
+
+
+@csrf_exempt
+def recommendations_api(request, listing_id):
+    if request == 'GET':
+        try:
+            rec = Recommendation.objects.get(pk=listing_id)
+        except ObjectDoesNotExist:
+            return HttpResponse(status=404)
+        recommendations = []
+        for listing in rec.recommended.all():
+            recommendations.append(listing.pk)
+        return JsonResponse(recommendations, safe=False, status=200)
+    else:
+        return HttpResponse('Request type must be GET', status=400)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -140,3 +140,8 @@ class ListingForm(ModelForm):
             'user_id'
         ]
 
+
+
+class Recommendation(models.Model):
+    listing_id = models.IntegerField(primary_key=True)
+    recommended = models.ManyToManyField(Listing)
