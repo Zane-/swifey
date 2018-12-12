@@ -1,5 +1,6 @@
 models:
   image: zanebilous/django
+  container_name: swifey_models
   external_links:
     - mysql:db
   volumes:
