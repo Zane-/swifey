@@ -24,6 +24,13 @@ data = sc.textFile("/tmp/data/access.log", 2)
 # 1. tell each worker to split each line of it's partition
 pairs = data.map(lambda line: line.split("\t"))
 
+# re-layout the data to ignore the user id
+pages = pairs.map(lambda pair: (pair[1], 1))
+
+# shuffle the data so that each key is only on one worker
+# and then reduce all the values by adding them together
+count = pages.reduceByKey(lambda x,y: int(x)+int(y))
+
 
 ###
 # our implementation of algorithm using some spark operations on
@@ -41,14 +48,6 @@ group_pairs = group.flatMap(lambda items: [(items[0], pair) for pair
 group_output = group_pairs.collect()
 
 ###
-
-
-# re-layout the data to ignore the user id
-pages = pairs.map(lambda pair: (pair[1], 1))
-
-# shuffle the data so that each key is only on one worker
-# and then reduce all the values by adding them together
-count = pages.reduceByKey(lambda x,y: int(x)+int(y))
 
 output = count.collect()
 for page_id, count in output:
