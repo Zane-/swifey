@@ -21,7 +21,7 @@ sc = SparkContext("spark://spark-master:7077", "PopularItems")
 # each worker loads a piece of the data file
 data = sc.textFile("/tmp/data/access.log", 2)
 
-# tell each worker to split each line of it's partition
+# 1. tell each worker to split each line of it's partition
 pairs = data.map(lambda line: line.split("\t"))
 
 
@@ -30,10 +30,10 @@ pairs = data.map(lambda line: line.split("\t"))
 # RDD/iter tools
 
 
-# 1. create dataset of (K, Iterable<V>) pairs
+# 2. create dataset of (K, Iterable<V>) pairs
 group = pairs.groupByKey()
 
-# 2. map user id to multiple pairs of [user id + item visited]
+# 3. map user id to multiple pairs of [user id + item visited]
 group_pairs = group.flatMap(lambda items: [(items[0], pair) for pair
                                 in combinations(items[1], 2)])
 
