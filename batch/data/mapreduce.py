@@ -40,14 +40,14 @@ count = pages.reduceByKey(lambda x,y: int(x)+int(y))
 group = pairs.groupByKey()
 
 # 3. map user id to multiple pairs of [pair of items visited]
-group_pairs = group.flatMap(lambda items: [(items[0], pair) for pair
-                                in combinations(items[1], 2)])
+group_pairs = group.flatMap(
+    lambda items: [(items[0], pair) for pair in combinations(items[1], 2)]
+)
 
 # 4. ((item1, item2), list of user1, user2, etc.)
-co_clicks = group_pairs.groupByKey()
-                        .map(lambda user_list:
-                                (user_list[0],
-                                    set(user_list[1])))
+co_clicks = group_pairs.groupByKey().map(
+    lambda user_list:(user_list[0], set(user_list[1]))
+)
 
 # 5.
 co_clicks_count = co_clicks.map(lambda line: (line[1], len(line[1])))

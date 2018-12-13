@@ -171,7 +171,7 @@ def create_listing(request):
 
 def listing(request, listing_id):
     authenticated = is_valid_auth(request.COOKIES)
-    user_id = request.COOKIES.get('auth')['user_id']
+    user_id = ast.literal_eval(request.COOKIES.get('auth'))['user_id']
     # post user_id and listing_id to experience to push to kafka
     rec_push = requests.post('http://exp-api:8000/api/recommendations/', data={'user_id': user_id, 'listing_id': listing_id})
 

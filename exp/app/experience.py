@@ -120,8 +120,9 @@ def create_listing(post_data):
         return 'FAIL'
 
 def push_recommendation(user_id, listing_id):
+    data = [user_id, listing_id]
     kafka = KafkaProducer(bootstrap_servers='kafka:9092')
-    kafka.send('new-recommendations-topic', (user_id, listing_id))
+    kafka.send('new-recommendations-topic', json.dumps(data).encode('utf-8'))
 
 
 def get_recommendations(listing_id):
