@@ -1,68 +1,46 @@
+import MySQLdb
+
 from pyspark import SparkContext
 from itertools import combinations
-
-# A pseudocode map-reduce style algorithm for computing co-views is
-# something like:
-#
-# 1. Read data in as pairs of (user_id, item_id clicked on by the user)
-# 2. Group data into (user_id, list of item ids they clicked on)
-# 3. Transform into (user_id, (item1, item2) where item1 and item2 are
-# pairs of items the user clicked on
-# 4. Transform into ((item1, item2), list of user1, user2 etc) where users
-# are all the ones who co-clicked (item1, item2)
-# 5. Transform into ((item1, item2), count of distinct users who co-clicked
-# (item1, item2)
-# 6. Filter out any results where less than 3 users co-clicked the same
-# pair of items
-# 7. bring the data back to the master node so we can print it out
 
 sc = SparkContext("spark://spark-master:7077", "PopularItems")
 
 # each worker loads a piece of the data file
 data = sc.textFile("/tmp/data/access.log", 2)
 
-# 1. tell each worker to split each line of it's partition
-pairs = data.map(lambda line: line.split("\t"))
+# tell each worker to split each line of its partition
+pairs = data.map(lambda line: line.split())
 
-# re-layout the data to ignore the user id
-pages = pairs.map(lambda pair: (pair[1], 1))
+# remove duplicate clicks
+pairs = pairs.distinct()
 
-# shuffle the data so that each key is only on one worker
-# and then reduce all the values by adding them together
-count = pages.reduceByKey(lambda x,y: int(x)+int(y))
+# transform pairs of (user_id, listing_id) into (user_id, Iterable<listing_id>)
+pairs = pairs.groupByKey()
 
-
-###
-# our implementation of algorithm using some spark operations on
-# RDD/iter tools
-
-# 2. create dataset of (K, Iterable<V>) pairs
-group = pairs.groupByKey()
-
-# 3. map user id to multiple pairs of [pair of items visited]
-group_pairs = group.flatMap(
-    lambda items: [(items[0], pair) for pair in combinations(items[1], 2)]
+# transform (user_id, Iterable<listing_id>) into
+# ((listing1, listing2), user_id)
+item_pairs = pairs.flatMap(
+    lambda pair: [(c, pair[0]) for c in combinations(pair[1], 2)]
 )
 
-# 4. ((item1, item2), list of user1, user2, etc.)
-co_clicks = group_pairs.groupByKey().map(
-    lambda user_list:(user_list[0], set(user_list[1]))
-)
+# tranform ((listing1, listing2), user_id) into
+# ((listing1, listing2) Iterable<user_id>)
+co_clicks = item_pairs.groupByKey()
 
-# 5.
-co_clicks_count = co_clicks.map(lambda line: (line[1], len(line[1])))
+# transform ((listing1, listing2), Iterable<user_id>) into
+# ((listing1, listing2), len(Iterable<user_id))
+co_clicks_count = co_clicks.map(lambda c: (c[0], len(c[1])))
 
-# 6.
-filtered_items = co_clicks_count.filter(lambda users: users[1] > 2)
+filtered_co_clicks = co_clicks_count.filter(lambda c: c[1] > 2)
 
-# return all elements of dataset as an array
-output = filtered_items.collect()
-###
+# return all elements of dataset as a list
+output = filtered_co_clicks.collect()
 
-# output = count.collect()
-
-for page_id, count in output:
-    print ("page_id %s count %d" % (page_id, count))
-print ("Popular items done")
+db = MySQLdb.connect(host="db", user="www", passwd="$3cureUS", db="cs4501")
+# SQL query to clear the recommendation table
+# take each pair of (listing1, listing2) and add
+# listing2 to listing1's recommendations and listing 1 to listing2's recommendations
+for pair, count in output:
+    db.query()
 
 sc.stop()

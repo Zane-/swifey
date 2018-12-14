@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-apt-get update &&
-apt-get install python3-dev libmysqlclient-dev -y &&
-apt-get install python-pip -y &&
-pip install mysqlclient &&
-apt-get install python-mysqldb
 
+# install dependencies
+apt-get update
+apt-get install python3-dev libmysqlclient-dev python-pip python-mysqldb -y
+pip install mysqlclient
+
+# update recommendations every 60 seconds
 while true
 do
-	python ./mapreduce.py
+	python mapreduce.py
 	sleep 60
 done
