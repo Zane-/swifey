@@ -2,25 +2,34 @@
 {% load static %}
 
 {% block main %}
-<table class="table">
-	<thead>
-		<tr>
-			<th scope="col">Type</th>
-			<th scope="col">Title</th>
-			<th scope="col">Desc.</th>
-			<th scope="col">Swipes</th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for listing in listings %}
-	<tr>
-		<th scope="row">{{ listing.listing_type }}</th>
-		<td>{{ listing.title }}</td>
-		<td>{{ listing.description }}</td>
-		<td>{{ listing.num_swipes }}</td>
-	</tr>
-	{% endfor %}
-	</tbody>
-</table>
+<div class="container">
+	<div class="section text-center">
+	  <div class="row">
+		<div class="col-md-12">
+		  <h2 class="title">Marketplace</h2>
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">Type</th>
+						<th scope="col">Title</th>
+						<th scope="col">Desc.</th>
+						<th scope="col">Swipes</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for listing in listings %}
+				<tr>
+					<th scope="row">{{ listing.listing_type }}</th>
+					<td>{{ listing.title }}</td>
+					<td>{{ listing.description }}</td>
+					<td>{{ listing.num_swipes }}</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			</div>
+			</div>
+			</div>
+			</div>
 
 {% endblock %}
