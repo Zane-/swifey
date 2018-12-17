@@ -12,5 +12,6 @@ urlpatterns = [
     path('login/', views.login_api, name='login_api'),
     path('auth/', views.validate_auth, name='validate_auth'),
     path('validate_email/', views.validate_email, name='validate_email'),
-    path('recommendations/<int:listing_id/', views.recommendations_api, name="recommendations"),
+    path('recommendations/<int:listing_id>/', views.recommendations_api),
+    path('recommendations/', views.recommendations_api),
 ]

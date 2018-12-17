@@ -1,7 +1,8 @@
-import MySQLdb
+import requests
 
-from pyspark import SparkContext
+from collections import defaultdict
 from itertools import combinations
+from pyspark import SparkContext
 
 sc = SparkContext("spark://spark-master:7077", "PopularItems")
 
@@ -34,13 +35,21 @@ co_clicks_count = co_clicks.map(lambda c: (c[0], len(c[1])))
 filtered_co_clicks = co_clicks_count.filter(lambda c: c[1] > 2)
 
 # return all elements of dataset as a list
-output = filtered_co_clicks.collect()
+data = filtered_co_clicks.collect()
 
-db = MySQLdb.connect(host="db", user="www", passwd="$3cureUS", db="cs4501")
-# SQL query to clear the recommendation table
-# take each pair of (listing1, listing2) and add
-# listing2 to listing1's recommendations and listing 1 to listing2's recommendations
-for pair, count in output:
-    db.query()
+recommended = defaultdict(list)
+# build an undirected graph such that each edge represents a recommendation
+for pair, count in data:
+    recommended[pair[0]].append(pair[1])
+    recommended[pair[1]].append(pair[0])
+
+# reset the database to clear
+requests.delete('http://models-api:8000/api/v1/recommendations/')
+
+# post all the recommendations to the database
+for key in recommended.keys():
+    recs = ','.join(recommended[key])
+    data = {'listing_id': key, 'recommended': recs}
+    requests.post('http://models-api:8000/api/v1/recommendations/', data=data)
 
 sc.stop()

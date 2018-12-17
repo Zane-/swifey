@@ -129,18 +129,29 @@ def validate_email(request):
 
 
 @csrf_exempt
-def recommendations_api(request, listing_id):
-    if request == 'GET':
+def recommendations_api(request, listing_id=None):
+    if request.method == 'GET':
+        if listing_id is None:
+            return HttpResponse('Bad request', status=400)
         try:
             rec = Recommendation.objects.get(pk=listing_id)
         except ObjectDoesNotExist:
             return HttpResponse(status=404)
-        recommendations = []
-        for listing in rec.recommended.all():
-            recommendations.append(listing.pk)
-        return JsonResponse(recommendations, safe=False, status=200)
+        return JsonResponse(rec.json(), safe=False, status=200)
+    elif request.method == 'POST':
+        pk = request.POST.get('listing_id')
+        rec = request.POST.get('recommended')
+        if pk is None or rec is None:
+            return HttpResponse('Invalid POST request', status=400)
+        try:
+            Recommendation.objects.create(listing_id=pk, recommended=rec)
+        except ValidationError:
+            return HttpResponse('Invalid POST request', status=400)
+        return HttpResponse('OK', status=201)
+    elif request.method == 'DELETE':
+        Recommendation.objects.all().delete()
     else:
-        return HttpResponse('Request type must be GET', status=400)
+        return HttpResponse('Bad request type', status=400)
 
 
 
