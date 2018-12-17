@@ -5,7 +5,7 @@ import os
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password, check_password
-from django.core.validators import validate_email, RegexValidator
+from django.core.validators import validate_email, validate_comma_separated_integer_list
 from django.db import models
 from django.forms import ModelForm, PasswordInput
 
@@ -144,4 +144,12 @@ class ListingForm(ModelForm):
 
 class Recommendation(models.Model):
     listing_id = models.IntegerField(primary_key=True)
-    recommended = models.ManyToManyField(Listing)
+    recommended = models.CharField(
+        max_length=10,
+        validators=[validate_comma_separated_integer_list],
+        default=''
+    )
+
+    def json(self):
+        return str(self.recommended).split(',')
+
