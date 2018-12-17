@@ -150,50 +150,6 @@ def recommendations_api(request, listing_id=None):
         return HttpResponse('OK', status=201)
     elif request.method == 'DELETE':
         Recommendation.objects.all().delete()
+        return HttpResponse(status=202)
     else:
         return HttpResponse('Bad request type', status=400)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

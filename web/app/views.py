@@ -174,7 +174,7 @@ def listing(request, listing_id):
     if authenticated:
         user_id = ast.literal_eval(request.COOKIES.get('auth'))['user_id']
     # post user_id and listing_id to experience to push to kafka
-        rec_push = requests.post('http://exp-api:8000/api/recommendations/', data={'user_id': user_id, 'listing_id': listing_id})
+        requests.post('http://exp-api:8000/api/push_access_log/', data={'user_id': user_id, 'listing_id': listing_id})
 
     rec_pull = requests.get('http://exp-api:8000/api/recommendations/{}'.format(listing_id))
     if rec_pull.status_code == 200:
@@ -182,18 +182,16 @@ def listing(request, listing_id):
         # we convert this to json for the matching listing id
         # and pass it into the template
         pks = rec_pull.json()
-        # sort recommendations by most co-clicks
-        pks.sort(reverse=True)
         # only render 5 recommendations
         pks = pks[0:5]
-        recs = {}
+        recs = []
         for pk in pks:
             listing = requests.get('http://exp-api:8000/api/listing/{}'.format(pk))
-            recs[pk] = listing.json()
+            recs.append(listing.json())
     else:
-        recs = {}
+        recs = []
 
-    has_recs = len(recs.keys()) > 0
+    has_recs = len(recs) > 0
 
     req = requests.get('http://exp-api:8000/api/listing/{}/'.format(listing_id))
     if req.status_code == 404:

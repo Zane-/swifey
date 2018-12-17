@@ -94,6 +94,18 @@ def search(request):
         return HttpResponse('Request type must be POST', status=400)
 
 @csrf_exempt
+def push_access_log(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        listing_id = request.POST.get('listing_id')
+        if user_id is None or listing_id is None:
+            return HttpResponse(status=400)
+        experience.push_to_access_log(user_id, listing_id)
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse('Request type must be POST', status=400)
+
+@csrf_exempt
 def recommendations(request, listing_id=None):
     if request.method == 'GET':
         if listing_id is None:
@@ -103,12 +115,5 @@ def recommendations(request, listing_id=None):
             return JsonResponse(rec, safe=False)
         else:
             return HttpResponse(status=404)
-    elif request.method == 'POST':
-        user_id = request.POST.get('user_id')
-        listing_id = request.POST.get('listing_id')
-        if user_id is None or listing_id is None:
-            return HttpResponse(status=400)
-        experience.push_recommendation(user_id, listing_id)
-        return HttpResponse(status=200)
     else:
-        return HttpResponse('Request type must be GET or POST', status=400)
+        return HttpResponse('Request type must be GET', status=400)
