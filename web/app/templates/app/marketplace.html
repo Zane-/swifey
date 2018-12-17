@@ -1,24 +1,26 @@
 {% extends 'app/base.html' %}
 {% load static %}
 
+{% block head %}
+<base href="../listing/" />
+{% endblock %}
+
+{% block inline-css %}
+<style>
+.trow {
+	transition: transform .2s;
+}
+.trow:hover {
+	cursor:pointer;
+	transform: scale(1.03);
+	-webkit-box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.3);
+	-moz-box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.3);
+	box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.3);
+}
+</style>
+{% endblock %}
+
 {% block main %}
-
-<head>
-	<base href="../listing/" />
-	<style>
-	.trow
-	{
-		transition: transform .2s;
-	}
-	.trow:hover {
-		cursor:pointer;
-		transform: scale(1.03);
-		background:#ccc;
-		color:#fff;
-	}
-	</style>
-</head>
-
 <div class="container">
 	<div class="section text-center">
 	  <div class="row">

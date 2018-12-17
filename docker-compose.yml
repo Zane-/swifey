@@ -123,7 +123,7 @@ spark-master:
     - 8080:8080
   volumes:
     - ./batch/data:/tmp/data
-  command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+  command: bash -c "bin/spark-class org.apache.spark.deploy.master.Master -h spark-master && ./tmp/data/sparkjob.sh"
 
 spark-worker:
   image: gettyimages/spark

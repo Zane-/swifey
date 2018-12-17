@@ -193,6 +193,8 @@ def listing(request, listing_id):
     else:
         recs = {}
 
+    has_recs = len(recs.keys()) > 0
+
     req = requests.get('http://exp-api:8000/api/listing/{}/'.format(listing_id))
     if req.status_code == 404:
         return HttpResponse(status=404)
@@ -202,7 +204,12 @@ def listing(request, listing_id):
     return render(
         request,
         'app/listing.html',
-        {'listing': listing, 'authenticated': authenticated, 'recommendations': recs}
+        {
+            'listing': listing,
+            'authenticated': authenticated,
+            'has_recs': has_recs,
+            'recommendations': recs
+        }
     )
 
 def profile(request):
