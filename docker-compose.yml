@@ -105,6 +105,7 @@ spark-master:
   environment:
     MASTER: spark://spark-master:7077
     SPARK_CONF_DIR: /conf
+    PYSPARK_PYTHON: /usr/bin/python3
   links:
     - models:models-api
   expose:
@@ -123,7 +124,7 @@ spark-master:
     - 8080:8080
   volumes:
     - ./batch/data:/tmp/data
-  command: bash -c "apt-get update && apt-get install python3-dev python-pip -y && pip install requests && . /tmp/data/sparkjob.sh"
+  command: bash -c "/tmp/data/sparkjob.sh"
 
 spark-worker:
   image: gettyimages/spark
@@ -135,6 +136,7 @@ spark-worker:
     SPARK_WORKER_MEMORY: 512m
     SPARK_WORKER_PORT: 8881
     SPARK_WORKER_WEBUI_PORT: 8081
+    PYSPARK_PYTHON: /usr/bin/python3
   links:
     - spark-master
     - models:models-api
