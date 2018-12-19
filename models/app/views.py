@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Authenticator, User, UserForm, Listing, ListingForm
+from app.models import Authenticator, User, UserForm, Listing, ListingForm, Recommendation
 
 @csrf_exempt
 def model_api(request, model, model_form, pk=None):
@@ -127,3 +127,29 @@ def validate_email(request):
     else:
         return HttpResponse('Request type must be POST', status=400)
 
+
+@csrf_exempt
+def recommendations_api(request, listing_id=None):
+    if request.method == 'GET':
+        if listing_id is None:
+            return HttpResponse('Bad request', status=400)
+        try:
+            rec = Recommendation.objects.get(pk=listing_id)
+        except ObjectDoesNotExist:
+            return HttpResponse(status=404)
+        return JsonResponse(rec.json(), safe=False, status=200)
+    elif request.method == 'POST':
+        pk = request.POST.get('listing_id')
+        rec = request.POST.get('recommended')
+        if pk is None or rec is None:
+            return HttpResponse('Invalid POST request', status=400)
+        try:
+            Recommendation.objects.create(listing_id=pk, recommended=rec)
+        except ValidationError:
+            return HttpResponse('Invalid POST request', status=400)
+        return HttpResponse('OK', status=201)
+    elif request.method == 'DELETE':
+        Recommendation.objects.all().delete()
+        return HttpResponse(status=202)
+    else:
+        return HttpResponse('Bad request type', status=400)

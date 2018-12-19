@@ -1,26 +1,65 @@
 {% extends 'app/base.html' %}
 {% load static %}
 
+{% block inline-css %}
+<style>
+#recommended a {
+  color: #212529;
+}
+#recommended a:hover {
+  color: #00c;
+}
+
+.table td.fit,
+.table th.fit {
+  width: 1%;
+  text-align:left;
+
+}
+</style>
+{% endblock %}
+
 {% block main %}
-<table class="table">
-	<thead>
+<div class="container">
+  <div class="section text-center">
+	<div class="row">
+	  <h3>{{ listing.title }}</h3>
+	</div>
+	<table class="table">
+	  <thead>
 		<tr>
-			<th scope="col">Type</th>
-			<th scope="col">Last Modified</th>
-			<th scope="col">Title</th>
-			<th scope="col">Description</th>
-			<th scope="col">Number of swipes</th>
+		  <th class="fit" scope="col">Type</th>
+		  <th class="fit" scope="col">Last Modified</th>
+		  <th class="fit" scope="col">Description</th>
+		  <th class="fit" scope="col">Number of swipes</th>
 		</tr>
-	</thead>
-	<tbody>
-	<tr>
-		<th scope="row">{{ listing.listing_type }}</th>
-		<td>{{ listing.last_modified }}</td>
-		<td>{{ listing.title }}</td>
-		<td>{{ listing.description }}</td>
-		<td>{{ listing.num_swipes }}</td>
-	</tr>
-	</tbody>
-</table>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <th class="fit" scope="row">{{ listing.listing_type }}</th>
+		  <td class="fit">{{ listing.last_modified }}</td>
+		  <td class="fit">{{ listing.description }}</td>
+		  <td class="fit">{{ listing.num_swipes }}</td>
+		</tr>
+	  </tbody>
+	</table>
+	{% if has_recs %}
+	<div class="row justify-content-start">
+	  <div class="col text-left">
+		<h6>Users who viewed this item also viewed</h6>
+	  </div>
+	  <div class="w-100"></div>
+	  <ul id="recommended" style="list-style:none">
+		{% for rec in recommendations %}
+		<li><a href="../{{rec.id}}">{{ rec.title }}</a></li>
+		{% endfor %}
+	  </ul>
+	</div>
+  </div>
+  {% endif %}
+</div>
+</div>
+</div>
+</div>
 
 {% endblock %}

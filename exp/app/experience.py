@@ -119,6 +119,19 @@ def create_listing(post_data):
     else:
         return 'FAIL'
 
+def push_to_access_log(user_id, listing_id):
+    data = [user_id, listing_id]
+    kafka = KafkaProducer(bootstrap_servers='kafka:9092')
+    kafka.send('new-recommendations-topic', json.dumps(data).encode('utf-8'))
+
+
+def get_recommendations(listing_id):
+    req = requests.get('http://models-api:8000/api/v1/recommendations/{}/'.format(listing_id))
+    if req.status_code == 200:
+        return req.json()
+    else:
+        return 'FAIL'
+
 def search(query):
     es = Elasticsearch(['es'])
     results = es.search(
