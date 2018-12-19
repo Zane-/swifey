@@ -3,7 +3,7 @@ from datetime import date
 
 from django.contrib.auth.hashers import make_password, check_password
 from django.test import TestCase, Client
-from .models import Authenticator, User, Listing
+from .models import Authenticator, User, Listing, Recommendation
 
 client = Client()
 
@@ -67,6 +67,42 @@ class ListingTestCase(TestCase):
             'last_modified': date.today()
         }
         self.assertEqual(listing.json(), json)
+
+ 
+class RecommendationTestCase(TestCase):
+    def setUp(self):
+        Recommendation.objects.create(
+            listing_id = 20, 
+            recommended = '20'
+        )
+
+    def test_post_recommendation(self):
+        data = {
+            'listing_id': 21,
+            'recommended': '21'
+        }
+        req = client.post('/api/v1/recommendations/', data)
+        self.assertEqual(req.status_code, 201)
+
+    def test_get_recommendation(self):
+        recommended = Recommendation.objects.get(listing_id=20)
+        list_id = recommended.listing_id
+        req = client.get('/api/v1/recommendations/{}/'.format(list_id))
+        j = recommended.json()
+        self.assertEqual(req.json(), j)
+
+    def test_delete_recommendation(self):
+        recommended = Recommendation.objects.get(listing_id=20)
+        list_id = recommended.listing_id
+        req = client.get('/api/v1/recommendations/{}/'.format(list_id))
+        self.assertNotEqual(req.status_code, 404)
+
+        req = client.delete('/api/v1/recommendations/{}/'.format(list_id))
+        self.assertEqual(req.status_code, 202)
+
+        req = client.get('/api/v1/recommendations/{}/'.format(list_id))
+        self.assertEqual(req.status_code, 404)
+        
 
 class AuthenticatorTestCase(TestCase):
     def setUp(self):
