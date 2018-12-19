@@ -83,6 +83,12 @@ class RecommendationTestCase(TestCase):
         }
         req = client.post('/api/v1/recommendations/', data)
         self.assertEqual(req.status_code, 201)
+        
+        recommended = Recommendation.objects.get(listing_id=21)
+        req = client.get('/api/v1/recommendations/21/')
+        self.assertNotEqual(req.status_code, 404)
+        j = recommended.json()
+        self.assertEqual(req.json(), j)
 
     def test_get_recommendation(self):
         recommended = Recommendation.objects.get(listing_id=20)
@@ -92,17 +98,15 @@ class RecommendationTestCase(TestCase):
         self.assertEqual(req.json(), j)
 
     def test_delete_recommendation(self):
-        recommended = Recommendation.objects.get(listing_id=20)
-        list_id = recommended.listing_id
-        req = client.get('/api/v1/recommendations/{}/'.format(list_id))
+        req = client.get('/api/v1/recommendations/')
         self.assertNotEqual(req.status_code, 404)
 
-        req = client.delete('/api/v1/recommendations/{}/'.format(list_id))
+        req = client.delete('/api/v1/recommendations/')
         self.assertEqual(req.status_code, 202)
 
-        req = client.get('/api/v1/recommendations/{}/'.format(list_id))
-        self.assertEqual(req.status_code, 404)
-        
+        recommended = Recommendation.objects.all()
+        self.assertEqual(recommended.count(), 0)
+
 
 class AuthenticatorTestCase(TestCase):
     def setUp(self):
